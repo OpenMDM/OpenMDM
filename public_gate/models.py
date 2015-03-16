@@ -23,13 +23,13 @@ class PropertyList(BaseProperty):
     """
     Describes primary property
     """
-    payload_type = models.CharField(auto_created="Configuration")
+    payload_type = models.CharField(max_length=13, editable=False, default="Configuration")
     removal_disallowed = models.CharField(max_length=15, choices=(('never', "Never"),
                                                                   ('authorization', "With authorization"),
                                                                   ('always', "Always")))
 
     def __str__(self):
-        return self.display_name + " - " + self.description
+        return self.payload_display_name + " - " + self.payload_description
 
     def save(self, *args, **kwargs):
         super(PropertyList, self).save(*args, **kwargs)
@@ -40,7 +40,7 @@ class EmailAccount(BaseProperty):
     Describes all necessary properties for mail configuration
     """
     property_list = models.OneToOneField(PropertyList)
-    payload_type = models.CharField(auto_created="com.apple.mail.managed")
+    payload_type = models.CharField(max_length=22, editable=False, default="com.apple.mail.managed")
     email_account_description = models.CharField(max_length=100)
     email_account_name = models.CharField(max_length=100)
     email_account_type = models.CharField(max_length=15, choices=(
@@ -70,7 +70,7 @@ class EmailAccount(BaseProperty):
     outgoing_mail_server_user_SSL = models.BooleanField(default=False)
     outgoing_mail_server_user_name = models.CharField(max_length=100)
     outgoing_password = models.CharField(max_length=100)
-    outgoing_password_same_as_incoming_password = models.CharField(max_length=100)
+    outgoing_password_same_as_incoming_password = models.BooleanField(default=True)
     prevent_app_sheet = models.BooleanField(default=False)
     prevent_move = models.BooleanField(default=False)
     SMIME_enabled = models.BooleanField(default=False)
@@ -86,7 +86,8 @@ class Restrictions(BaseProperty):
     """
     Describes all restrictions properties
     """
-    payload_type = models.CharField(auto_created="com.apple.applicationaccess")
+    property_list = models.OneToOneField(PropertyList)
+    payload_type = models.CharField(max_length=28, editable=False, default="com.apple.applicationaccess")
     allow_adding_game_center_friends = models.BooleanField(default=True)
     allow_app_installation = models.BooleanField(default=True)
     allow_assistant = models.BooleanField(default=True)
