@@ -18,17 +18,13 @@ OpenMDM uses a number of open source projects to work properly:
 
 ```sh
 $ sudo pip install django
-$ wget https://pypi.python.org/packages/source/M/MySQL-python/MySQL-python-1.2.5.zip
-$ unzip MySQL-python-1.2.5.zip
-$ cd MySQL-python-1.2.5
-$ python2.7 setup.py build
-$ sudo python2.7 setup.py install
 $ git clone https://github.com/betezed/MobileDeviceManagement.git OpenMDM
 $ cd OpenMDM
 ```
 
+Django needs Mysql-connector, PyCharm installs it.
 OpenMDM uses a MySQL database named mdm. Ensure that such a database is created, or change the settings in settings.py  
-Once it's done, you can start your server
+Once it's done, you can start your server.
 
 ```sh
 $ python manage.py makemigrations public_gate
@@ -36,7 +32,7 @@ $ python manage.py migrate
 $ python manage.py createsuperuser
 $ python manage.py runserver
 ```
-OpenMDM is now listening on port 8000.  
+OpenMDM is now listening on port 8000.
 You can set a custom port and accept connexions from any IP addresses
 
 ```sh
