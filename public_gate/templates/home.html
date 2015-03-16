@@ -96,18 +96,12 @@
                     <td>Description</td>
                     <td>Status</td>
                 </th>
-                <tr>
-                        <td>1</td>
-                        <td>Marketing</td>
-                        <td>All datas and specifications for marketing</td>
-                        <td><a class="btn btn-primary btn-lg" href="{% url 'public_gate:property_list' 1 %}" >Download &raquo;</a></td>
-                    </tr>
                 {% for plist in plists %}
                     <tr>
                         <td>{{ plist.id }}</td>
-                        <td>{{ plist.name }}</td>
-                        <td>{{ plist.description }}</td>
-                        <td><a class="btn btn-primary btn-lg" href="#" >Download &raquo;</a></td>
+                        <td>{{ plist.payload_display_name }}</td>
+                        <td>{{ plist.payload_description }}</td>
+                        <td><a class="btn btn-primary btn-lg" href="{% url 'public_gate:property_list' plist.id %}" download="list_{{ plist.payload_uuid }}.plist" >Download &raquo;</a></td>
                     </tr>
                 {% endfor %}
             </table>

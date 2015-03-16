@@ -1,17 +1,22 @@
 import json
 import re
 from plistlib import dumps
+from django.http import HttpResponse
 
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
+from django.template import RequestContext, loader
 
 from public_gate.models import PropertyList, EmailAccount, Restrictions
 
 
 def home(request):
-    d = {}
-    return render(request, 'home.html', d)
+    plists = {}
+    if request.user.is_authenticated():
+        plists = PropertyList.objects.order_by('-id')
+    context = {'plists': plists}
+    return render(request, 'home.html', context)
 
 
 def about(request):
