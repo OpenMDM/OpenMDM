@@ -5,12 +5,13 @@
         <h2>Users</h2>
 
         <table class="table table-striped">
-            <th>
-                <td>Login</td>
-                <td>Last name</td>
-                <td>First name</td>
-                <td>Email</td>
-            </th>
+            <tr>
+                <th>#</th>
+                <th>Login</th>
+                <th>Last name</th>
+                <th>First name</th>
+                <th>Email</th>
+            </tr>
             {% for user in users %}
                 <tr>
                     <td>{{ user.id }}</td>

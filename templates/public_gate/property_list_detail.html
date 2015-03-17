@@ -12,21 +12,37 @@
                 {{ plist.payload_description }}
             </p>
             <h3>Main characteristics</h3>
-            <b>Identifier : </b>{{ plist.payload_identifier }}<br />
-            <b>Organization : </b>{{ plist.payload_organization }}<br />
-            <b>Type : </b>{{ plist.payload_type }}<br />
-            <b>UUID : </b>{{ plist.payload_uuid }}<br />
-            <b>Version : </b>{{ plist.payload_version }}<br />
+            {% for plist in plist_python %}
+                <table class="table table-striped table-condensed">
+                <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+                </tr>
+                {% for field, value in plist.fields.items %}
+                    <tr>
+                        <td>{{ field }}</td>
+                        <td>{{ value }}</td>
+                    </tr>
+                {% endfor %}
+                </table>
+            {% endfor %}
 
             {% if dependencies|length > 0 %}
                 <h3>Dependencies</h3>
                 {% for dependency in dependencies_json %}
                     <h4>{{ dependency.model }}</h4>
-                    <ul>
+                    <table class="table table-striped table-condensed">
+                    <tr>
+                        <th>Property</th>
+                        <th>Value</th>
+                    </tr>
                         {% for field, value in dependency.fields.items %}
-                            <li><b>{{ field }}</b> : {{ value }}</li>
+                            <tr>
+                                <td>{{ field }}</td>
+                                <td>{{ value }}</td>
+                            </tr>
                         {% endfor %}
-                    </ul>
+                    </table>
                 {% endfor %}
             {% else %}
                 <h4>No dependencies</h4>
