@@ -62,6 +62,7 @@ class PropertyList(BaseModel):
         result = format_object_to_plist(self)
         result['payloadContent'] = []
         for name, obj in (inspect.getmembers(sys.modules[__name__])):
+            # iOS properties name are only composed by letters, explaining [A-Za-z]
             if re.match("[A-Za-z]*Property$", name):
                 # Checking for all modules ending with "Property"
                 try:
