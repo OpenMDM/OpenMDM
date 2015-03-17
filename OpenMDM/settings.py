@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'bootstrapform',
     'public_gate',
+    'django_python3_ldap',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -49,6 +50,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
+AUTHENTICATION_BACKENDS = ("django_python3_ldap.auth.LDAPBackend",)
 
 ROOT_URLCONF = 'OpenMDM.urls'
 
