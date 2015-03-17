@@ -1,0 +1,12 @@
+{% extends "base_template.html" %}
+{% load bootstrap %}
+{% block content %}
+    <div class="row">
+        <h2>Add a Property list</h2>
+        <form action="{% url 'public_gate:property_list_add' %}" method="post">
+            {% csrf_token %}
+            {{ form | bootstrap }}
+            <button class="btn btn-group-lg btn-success" type="submit" value="Add user">Add plist</button>
+        </form>
+    </div>
+{% endblock %}

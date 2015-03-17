@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
 
-from public_gate.models import PropertyList, PropertyListForm
+from public_gate.models import PropertyList, PropertyListForm, UserForm
 
 
 def home(request):
@@ -91,7 +91,7 @@ def property_lists(request):
     :param request: 
     :return render:
     """
-    property_lists = PropertyList.objects.order_by('-id')
+    property_lists = PropertyList.objects.order_by('id')
     context = {'property_lists': property_lists}
     return render(request, 'public_gate/property_lists.html', context)
 
@@ -157,12 +157,13 @@ def add_property_list(request):
     """
     if request.method == 'POST':
         form = PropertyListForm(request.POST)
+        print("POST property")
         if form.is_valid():
-            form.save(commit=False)
-            return HttpResponseRedirect(reverse('public_gate:home'))
+            form.save()
+            form = PropertyListForm()
     else:
         form = PropertyListForm()
-    return HttpResponseRedirect(reverse('public_gate:home', kwargs={"form": form}))
+    return render(request, 'public_gate/property_list_add.html', dict(form=form))
 
 
 ########################################################################
@@ -206,5 +207,10 @@ def add_user(request):
     :param request:
     :return render:
     """
-    d = {}
-    return render(request, 'public_gate/users.html', d)
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            form.save()
+    else:
+        form = UserForm()
+    return render(request, 'public_gate/user_add.html', dict(form=form))

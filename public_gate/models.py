@@ -1,6 +1,7 @@
 import inspect
 import sys
 from plistlib import dumps
+from django.contrib.auth.models import User
 
 from django.db import models
 import re
@@ -167,4 +168,10 @@ class RestrictionsProperty(BaseModel):
 class PropertyListForm(forms.ModelForm):
     class Meta:
         model = PropertyList
+        exclude = []
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
         exclude = []
