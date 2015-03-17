@@ -22,7 +22,7 @@ $ git clone https://github.com/betezed/MobileDeviceManagement.git OpenMDM
 $ cd OpenMDM
 ```
 
-Django needs Mysql-connector, PyCharm installs it.
+Django needs Mysql-connector, PyCharm installs it but it can be found [here](http://dev.mysql.com/downloads/connector/python/)  
 OpenMDM uses a MySQL database named mdm. Ensure that such a database is created, or change the settings in settings.py  
 Once it's done, you can start your server.
 
