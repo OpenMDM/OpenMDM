@@ -111,3 +111,5 @@ config.py
 .idea/*
 .idea
 
+#mysql connector
+mysql
