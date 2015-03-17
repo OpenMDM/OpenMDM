@@ -2,7 +2,35 @@
 
 {% block content %}
     <div class="row">
-        <h2>Property list n°{{ plist.id }}</h2>
-        {{ plist }}
+        <h2>{{ plist.payload_display_name }} (ID : {{ plist.id }}) <a class="btn btn-primary btn-lg" href="{% url 'public_gate:property_list_download' plist.id %}" download="list_{{ plist.payload_uuid }}.plist" >Download &raquo;</a></h2>
+        <p>
+
+        </p>
+        <p>
+            <h3>Description</h3>
+            <p>
+                {{ plist.payload_description }}
+            </p>
+            <h3>Main characteristics</h3>
+            <b>Identifier : </b>{{ plist.payload_identifier }}<br />
+            <b>Organization : </b>{{ plist.payload_organization }}<br />
+            <b>Type : </b>{{ plist.payload_type }}<br />
+            <b>UUID : </b>{{ plist.payload_uuid }}<br />
+            <b>Version : </b>{{ plist.payload_version }}<br />
+
+            {% if dependencies|length > 0 %}
+                <h3>Dependencies</h3>
+                {% for dependency in dependencies_json %}
+                    <h4>{{ dependency.model }}</h4>
+                    <ul>
+                        {% for field, value in dependency.fields.items %}
+                            <li><b>{{ field }}</b> : {{ value }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+            {% else %}
+                <h4>No dependencies</h4>
+            {% endif %}
+        </p>
     </div>
 {% endblock %}

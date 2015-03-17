@@ -121,9 +121,15 @@ def property_list_detail(request, plist_id):
     """
     try:
         plist = PropertyList.objects.get(id=plist_id)
+        dependencies = plist.get_dependent_properties()
     except PropertyList.DoesNotExist:
         return HttpResponse(status=404)
-    return render(request, 'public_gate/property_list_detail.html', dict(plist=plist))
+    plist_python = serializers.serialize("python", [plist])
+    dependencies_json = serializers.serialize("python", dependencies)
+    return render(request, 'public_gate/property_list_detail.html', dict(plist=plist,
+                                                                         dependencies=dependencies,
+                                                                         plist_python=plist_python,
+                                                                         dependencies_json=dependencies_json))
 
 
 def property_list_download(request, plist_id):

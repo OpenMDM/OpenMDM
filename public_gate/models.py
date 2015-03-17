@@ -38,6 +38,19 @@ class PropertyList(BaseModel):
     def save(self, *args, **kwargs):
         super(PropertyList, self).save(*args, **kwargs)
 
+    def get_dependent_properties(self):
+        dependencies = []
+        for name, obj in (inspect.getmembers(sys.modules[__name__])):
+            if re.match("[A-Za-z]*Property$", name):
+                # Checking for all modules ending with "Property"
+                try:
+                    prop = obj.objects.get(property_list_id=self.id)
+                    dependencies.append(prop)
+                except obj.DoesNotExist:
+                    print("This property does not have " + name)
+        return dependencies
+
+
     def generate(self):
         """
         Generate an plist file from a PropertyList object
