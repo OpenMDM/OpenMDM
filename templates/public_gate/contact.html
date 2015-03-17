@@ -1,0 +1,33 @@
+{% extends "base_template.html" %}
+
+{% block content %}
+    <form class="form-horizontal" style="width:50%;">
+        <fieldset>
+
+            <!-- Form Name -->
+            <legend>Contact</legend>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input class="form-control" id="email" name="email" placeholder="email" required="" type="text">
+
+            </div>
+
+            <!-- Textarea -->
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea class="form-control" id="message" name="message">Your message</textarea>
+            </div>
+
+            <!-- Button -->
+            <div class="form-group">
+                <label for="send"></label>
+                <button id="send" name="send" class="btn btn-success">Send</button>
+            </div>
+
+        </fieldset>
+    </form>
+
+
+{% endblock %}

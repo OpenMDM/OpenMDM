@@ -1,10 +1,14 @@
+import inspect
+import sys
+from plistlib import dumps
+
 from django.db import models
+import re
+from common.utils.PropertyList import format_object_to_plist
+from django import forms
 
 
-# Create your models here.
-
-
-class BaseProperty(models.Model):
+class BaseModel(models.Model):
     """
     Describes base attributes for any property
     """
@@ -19,7 +23,7 @@ class BaseProperty(models.Model):
         abstract = True
 
 
-class PropertyList(BaseProperty):
+class PropertyList(BaseModel):
     """
     Describes primary property
     """
@@ -34,8 +38,25 @@ class PropertyList(BaseProperty):
     def save(self, *args, **kwargs):
         super(PropertyList, self).save(*args, **kwargs)
 
+    def generate(self):
+        """
+        Generate an plist file from a PropertyList object
+        """
+        result = format_object_to_plist(self)
+        result['payloadContent'] = []
+        for name, obj in (inspect.getmembers(sys.modules[__name__])):
+            if re.match("[A-Za-z]*Property$", name):
+                # Checking for all modules ending with "Property"
+                try:
+                    prop = obj.objects.get(property_list_id=self.id)
+                    prop = format_object_to_plist(prop)
+                    result['payloadContent'].append(prop)
+                except obj.DoesNotExist:
+                    print("This property does not have " + name)
+        return dumps(result)
 
-class EmailAccount(BaseProperty):
+
+class EmailAccountProperty(BaseModel):
     """
     Describes all necessary properties for mail configuration
     """
@@ -79,10 +100,10 @@ class EmailAccount(BaseProperty):
         return self.email_account_name + " - " + self.email_account_description
 
     def save(self, *args, **kwargs):
-        super(EmailAccount, self).save(*args, **kwargs)
+        super(EmailAccountProperty, self).save(*args, **kwargs)
         
         
-class Restrictions(BaseProperty):
+class RestrictionsProperty(BaseModel):
     """
     Describes all restrictions properties
     """
@@ -127,4 +148,10 @@ class Restrictions(BaseProperty):
         return self.email_account_name + " - " + self.email_account_description
 
     def save(self, *args, **kwargs):
-        super(Restrictions, self).save(*args, **kwargs)
+        super(RestrictionsProperty, self).save(*args, **kwargs)
+
+
+class PropertyListForm(forms.ModelForm):
+    class Meta:
+        model = PropertyList
+        exclude = []

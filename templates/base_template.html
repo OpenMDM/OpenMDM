@@ -41,8 +41,14 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li class="active"><a href="{% url 'public_gate:home' %}">Home</a></li>
-                <li><a href="{% url 'public_gate:about' %}">About</a></li>
+                {% if perms.public_gate.add_user %}
+                    <li><a href="{% url 'public_gate:users' %}">Users</a></li>
+                {% endif %}
+                {% if perms.public_gate.add_propertylist %}
+                    <li><a href="{% url 'public_gate:property_lists' %}">plists</a></li>
+                {% endif %}
                 <li><a href="{% url 'public_gate:contact' %}">Contact</a></li>
+                <li><a href="{% url 'public_gate:about' %}">About</a></li>
             </ul>
             {% if not user.is_authenticated %}
                 <form class="navbar-form navbar-right" action="{% url 'public_gate:site_login' %}" method="post">
@@ -82,34 +88,12 @@
 </div>
 
 <div class="container">
-    <!-- Example row of columns -->
-    <div class="row">
-        {% if not user.is_authenticated %}
-            <h2>You must be logged in</h2>
 
-        {% else %}
-            <h2>Your plists, {{ user.username }} !</h2>
 
-            <table class="table table-striped">
-                <th>
-                    <td>Name</td>
-                    <td>Description</td>
-                    <td>Status</td>
-                </th>
-                {% for plist in plists %}
-                    <tr>
-                        <td>{{ plist.id }}</td>
-                        <td>{{ plist.payload_display_name }}</td>
-                        <td>{{ plist.payload_description }}</td>
-                        <td><a class="btn btn-primary btn-lg" href="{% url 'public_gate:property_list' plist.id %}" download="list_{{ plist.payload_uuid }}.plist" >Download &raquo;</a></td>
-                    </tr>
-                {% endfor %}
-            </table>
-        {% endif %}
-    </div>
+{% block content %}
+{% endblock %}
 
     <hr>
-
     <footer>
         <p>&copy; OpenMDM Project 2015</p>
     </footer>

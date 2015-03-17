@@ -1,0 +1,25 @@
+{% extends "base_template.html" %}
+
+{% block content %}
+    <div class="row">
+        <h2>Users</h2>
+
+        <table class="table table-striped">
+            <th>
+                <td>Login</td>
+                <td>Last name</td>
+                <td>First name</td>
+                <td>Email</td>
+            </th>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td><a href="{% url 'public_gate:user_detail' user.id %}">{{ user.username }}</a></td>
+                    <td>{{ user.last_name }}</td>
+                    <td>{{ user.first_name }}</td>
+                    <td>{{ user.email }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

@@ -92,6 +92,7 @@ STATICFILES_DIRS = (
     os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(__file__))), 'src'),
 )
 
+
 TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'public_gate/templates'),
+    os.path.join(BASE_DIR, 'templates'),
 )

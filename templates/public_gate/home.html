@@ -1,0 +1,12 @@
+{% extends "base_template.html" %}
+
+{% block content %}
+    <div class="row">
+        {% if not user.is_authenticated %}
+            <h2>You must be logged in</h2>
+        {% else %}
+            <h2>Welcome {{ user.username }}</h2>
+            <a href="{% url 'public_gate:property_lists' %}">Your property lists</a>
+        {% endif %}
+    </div>
+{% endblock %}

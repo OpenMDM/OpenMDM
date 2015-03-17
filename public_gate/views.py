@@ -1,83 +1,204 @@
 import json
 import re
-from plistlib import dumps
-from django.http import HttpResponse
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
-from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
-from django.template import RequestContext, loader
 
-from public_gate.models import PropertyList, EmailAccount, Restrictions
+from public_gate.models import PropertyList, PropertyListForm
 
 
 def home(request):
-    plists = {}
-    if request.user.is_authenticated():
-        plists = PropertyList.objects.order_by('-id')
-    context = {'plists': plists}
-    return render(request, 'home.html', context)
+    """
+    Displays home page
+    :param request:
+    :return render:
+    """
+    d = {}
+    return render(request, 'public_gate/home.html', d)
 
 
 def about(request):
+    """
+    Displays about page
+    :param request:
+    :return render:
+    """
     d = {}
-    return render(request, 'about.html', d)
+    return render(request, 'public_gate/about.html', d)
 
 
 def contact(request):
+    """
+    Displays contact page
+    :param request:
+    :return render:
+    """
     d = {}
-    return render(request, 'contact.html', d)
+    return render(request, 'public_gate/contact.html', d)
 
 
-def property_list(request, plist_id):
-    plist = PropertyList.objects.filter(id=plist_id)
-    if 0 == len(plist):
-        result = {"error": "This property list does not exist."}
-        return render(request, 'property_list.html', dict(content=dumps(result)), content_type="application/xml")
-    result = format_object_to_plist(plist)
-    result['payloadContent'] = []
-    # TODO Make this part generic. We don't want to add some lines when we add a model.
-    email_property = EmailAccount.objects.filter(property_list_id=plist_id)
-    if 0 != len(email_property):
-        email_property = format_object_to_plist(email_property)
-        result['payloadContent'].append(email_property)
-    restriction_property = Restrictions.objects.filter(property_list_id=plist_id)
-    if 0 != len(restriction_property):
-        restriction_property = format_object_to_plist(restriction_property)
-        result['payloadContent'].append(restriction_property)
-    return render(request, 'property_list.html', dict(content=dumps(result)), content_type="application/xml")
+########################################################################
+#                                                                      #
+#                       Authentication Views
+#                                                                      #
+########################################################################
 
 
 def site_login(request):
+    """
+    Logs in current user
+    :param request:
+    :return render:
+    """
     if request.method == "POST":
         user_login = request.POST['login']
         user_password = request.POST['password']
         user = authenticate(username=user_login, password=user_password)
         if user is not None:
             login(request, user)
-            return render(request, 'home.html')
+            return HttpResponseRedirect(reverse('public_gate:home'))
         else:
             # User.objects.create_user(user_login, '', user_password).save()
-            return render(request, 'home.html', {"error_message": "Wrong login/password combination"})
-    return render(request, 'home.html', {"error_message": "One or more fields are empty"})
+            return render(request, 'public_gate/home.html', {"error_message": "Wrong login/password combination"})
+    return render(request, 'public_gate/home.html', {"error_message": "One or more fields are empty"})
 
 
 def site_logout(request):
+    """
+    Logs out current user
+    :param request:
+    :return render:
+    """
     logout(request)
-    return render(request, 'home.html')
+    return HttpResponseRedirect(reverse('public_gate:home'))
 
 
-def format_object_to_plist(obj):
-    """
-    Formats all keys from a python-like dictionary to plist-like variable
-    """
-    dictionary = json.loads(serializers.serialize('json', obj))
-    dictionary = dictionary[0]['fields']
-    return {re.sub(r"_([a-z0-9])", underscore_to_camel_case, str(key)):  value for key, value in dictionary.items()}
+########################################################################
+#                                                                      #
+#                       Property List Views
+#                                                                      #
+########################################################################
 
 
-def underscore_to_camel_case(match):
+def property_lists(request):
     """
-    Transforms python-like variable (with _ separator) to plist-like variable (camel-cased)
+    Fetches all property lists
+    From: property_list/
+    :param request: 
+    :return render:
     """
-    return match.group(1).upper()
+    property_lists = PropertyList.objects.order_by('-id')
+    context = {'property_lists': property_lists}
+    return render(request, 'public_gate/property_lists.html', context)
+
+
+def property_lists_for_user(request, user_id):
+    """
+    Fetches plists for specific user
+    From: user/<user_id>/property_list/
+    :param request:
+    :param user_id:
+    :return render:
+    """
+    try:
+        plist = PropertyList.objects.get(user_id=user_id)
+    except PropertyList.DoesNotExist:
+        return HttpResponse(status=404)
+    return render(request, 'public_gate/property_lists.html', dict(plist=plist))
+
+
+def property_list_detail(request, plist_id):
+    """
+    Fetches one plist
+    From: property_list/<plist_id>/
+    :param request: 
+    :param plist_id: 
+    :return render:
+    """
+    try:
+        plist = PropertyList.objects.get(id=plist_id)
+    except PropertyList.DoesNotExist:
+        return HttpResponse(status=404)
+    return render(request, 'public_gate/property_list_detail.html', dict(plist=plist))
+
+
+def property_list_download(request, plist_id):
+    """
+    Fetches one plist and converts it to plist format (xml based)
+    From: property_list/<plist_id>/download/
+    :param request: 
+    :param plist_id: 
+    :return:
+    """
+    try:
+        plist = PropertyList.objects.get(id=plist_id)
+        plist = plist.generate()
+    except PropertyList.DoesNotExist:
+        return HttpResponse(status=404)
+    return render(request, 'public_gate/property_list_download.html', dict(plist=plist), content_type="application/xml")
+
+
+def add_property_list(request):
+    """
+    Adds one property list
+    From: property_list/add/
+    :param request:
+    :return:
+    """
+    if request.method == 'POST':
+        form = PropertyListForm(request.POST)
+        if form.is_valid():
+            form.save(commit=False)
+            return HttpResponseRedirect(reverse('public_gate:home'))
+    else:
+        form = PropertyListForm()
+    return HttpResponseRedirect(reverse('public_gate:home', kwargs={"form": form}))
+
+
+########################################################################
+#                                                                      #
+#                           User Views
+#                                                                      #
+########################################################################
+
+
+def users(request):
+    """
+    Fetches all users
+    From: user/
+    :param request:
+    :return render:
+    """
+    users = User.objects.order_by('id')
+    context = {'users': users}
+    return render(request, 'public_gate/users.html', context)
+
+
+def user_detail(request, user_id):
+    """
+    Fetches one user
+    From: user/<user_id>/
+    :param request:
+    :param user_id:
+    :return render:
+    """
+    try:
+        user = User.objects.get(id=user_id)
+    except PropertyList.DoesNotExist:
+        return HttpResponse(status=404)
+    return render(request, 'public_gate/user_detail.html', dict(user=user))
+
+
+def add_user(request):
+    """
+    Adds one user
+    From: user/add/
+    :param request:
+    :return render:
+    """
+    d = {}
+    return render(request, 'public_gate/users.html', d)
