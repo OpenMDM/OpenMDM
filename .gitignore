@@ -112,3 +112,5 @@ crashlytics-build.properties
 
 #mysql connector
 mysql
+
+OpenMDM/settings.py
