@@ -1,12 +1,15 @@
 import inspect
 import sys
+import uuid
 from plistlib import dumps
+import re
+
 from django.contrib.auth.models import User
 
 from django.db import models
-import re
-from common.utils.PropertyList import format_object_to_plist
 from django import forms
+
+from common.utils.PropertyList import format_object_to_plist
 
 
 class BaseModel(models.Model):
@@ -18,7 +21,7 @@ class BaseModel(models.Model):
     payload_identifier = models.CharField(max_length=100, unique=True)
     payload_organization = models.CharField(max_length=100)
     payload_version = models.CharField(max_length=100)
-    payload_uuid = models.CharField(max_length=100, unique=True)
+    payload_uuid = models.CharField(max_length=100, default=str(uuid.uuid1()).upper())
 
     class Meta:
         abstract = True
@@ -168,10 +171,23 @@ class RestrictionsProperty(BaseModel):
 class PropertyListForm(forms.ModelForm):
     class Meta:
         model = PropertyList
-        exclude = []
+        fields = ['payload_display_name',
+                  'payload_description',
+                  'payload_identifier',
+                  'payload_organization',
+                  'payload_version',
+                  'removal_disallowed'
+                  ]
 
 
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
-        exclude = []
+        fields = ['username',
+                  'password',
+                  'first_name',
+                  'last_name',
+                  'email',
+                  'is_superuser',
+                  'is_staff'
+                  ]
