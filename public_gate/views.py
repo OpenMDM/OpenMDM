@@ -1,12 +1,11 @@
-import json
-import re
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
+from django.contrib.auth.hashers import (
+    make_password)
 
 from public_gate.models import PropertyList, PropertyListForm, UserForm
 
@@ -210,6 +209,8 @@ def add_user(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
         if form.is_valid():
+            # Creates hash with django make_password method
+            form.instance.password = make_password(form.instance.password)
             form.save()
     else:
         form = UserForm()
