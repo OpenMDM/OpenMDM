@@ -1,6 +1,7 @@
 # OpenMDM Project
 
-OpenMDM Project is an Open-Source Mobile Device Management project, initially developped to support iOS devices, but built in order to be easily extended with multiple device types.
+OpenMDM Project is an Open-Source Mobile Device Management project, initially developed to support iOS devices, but built in order to be easily extended with multiple device types.  
+It's written in Python 3.4 (and needs to be used with Python 3.X)
 
 ### Version
 
@@ -8,16 +9,16 @@ OpenMDM Project is an Open-Source Mobile Device Management project, initially de
 
 ### Tech
 
-OpenMDM uses a number of open source projects to work properly:
+OpenMDM uses open source projects to work properly:
 
-* [Django](https://www.djangoproject.com/) - HTML enhanced for web apps!
-* [Twitter Bootstrap](http://twitter.github.com/bootstrap/) - great UI boilerplate for modern web apps
+* [Django](https://www.djangoproject.com/)  
+* [Twitter Bootstrap](http://twitter.github.com/bootstrap/)  
 
 ### Installation
 
 
 ```sh
-$ sudo pip install django
+$ sudo pip3.4 install django
 $ git clone https://github.com/betezed/MobileDeviceManagement.git OpenMDM
 $ cd OpenMDM
 ```
