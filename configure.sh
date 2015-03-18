@@ -20,11 +20,6 @@ then
     exit -1
 fi
 SITE_PACKAGE=$(${PYTHON3_PATH} -c 'import site; print(site.getsitepackages()[0])')
-if [ -d "./mysql" ]
-then
-    mv ./mysql ${SITE_PACKAGE} 2>/dev/null
-    echo "[OK] MySQL connector added"
-fi
 
 echo "Creating tabes ..."
 ${PYTHON3_PATH} manage.py makemigrations public_gate
