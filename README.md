@@ -16,6 +16,10 @@ OpenMDM uses open source projects to work properly:
 * [Django admin bootstrapped](https://pypi.python.org/pypi/django-admin-bootstrapped/)
 * [Twitter Bootstrap](http://twitter.github.com/bootstrap/)  
 
+### Architecture
+
+![alt tag](http://hackndo.com/archi.jpg) 
+
 ### Installation
 
 Requirements :  
@@ -51,4 +55,3 @@ Want to contribute? Great, feel free !
 [Home page](http://hackndo.com:8000)  
 [Admin page](http://hackndo.com:8000/admin/)
 
-![alt tag](http://www.newbiecontest.org/images/logo.png)
