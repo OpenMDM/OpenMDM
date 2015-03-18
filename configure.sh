@@ -1,6 +1,9 @@
 #!/bin/bash
+
 PYTHON3_DEFAULT_PATH=$(which python3)
+
 echo -ne "Please enter the path to Python 3.4 "
+
 if [ ! -z ${PYTHON3_DEFAULT_PATH} ]
 then
     echo -ne "[default ${PYTHON3_DEFAULT_PATH}] "
