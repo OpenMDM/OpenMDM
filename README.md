@@ -12,22 +12,25 @@ It's written in Python 3.4 (and needs to be used with Python 3.X)
 OpenMDM uses open source projects to work properly:
 
 * [Django](https://www.djangoproject.com/)  
+* [Django Python3 LDAP](https://pypi.python.org/pypi/django-python3-ldap/0.9.1)
+* [Django admin bootstrapped](https://pypi.python.org/pypi/django-admin-bootstrapped/)
 * [Twitter Bootstrap](http://twitter.github.com/bootstrap/)  
 
 ### Installation
 
+Requiremens :  
+
+* [Python 3.4](https://www.python.org/downloads/release/python-343/)
+* [Django 1.7](https://docs.djangoproject.com/fr/1.7/topics/install/)
+* [MySQL](http://www.mysql.com/downloads/) with *mdm* database
+* [MySQL - Python connector](https://pypi.python.org/pypi/mysql-connector-python/2.0.3)
 
 ```sh
-$ sudo pip3.4 install django
+$ pip3.4 install django-admin-bootstrapped
+$ pip3.4 install django-python3-ldap
 $ git clone https://github.com/betezed/MobileDeviceManagement.git OpenMDM
 $ cd OpenMDM
-```
-
-OpenMDM uses a MySQL database named mdm. Ensure that such a database is created, or change the settings in settings.py  
-Once it's done, you can configure your application and start your server.
-
-```sh
-$ sudo ./configure.sh # sudo, because it needs write permissions in python 3.4 "site-packages" directory
+$ sudo ./configure.sh
 $ python manage.py runserver
 ```
 OpenMDM is now listening on port 8000.
@@ -46,4 +49,4 @@ Want to contribute? Great, feel free !
 ### Examples
 
 [Home page](http://hackndo.com:8000)  
-[Admin page](http://hackndo.com:8000/admin/) 
+[Admin page](http://hackndo.com:8000/admin/)
