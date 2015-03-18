@@ -40,7 +40,7 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="{% url 'public_gate:home' %}">Home</a></li>
+                <li><a href="{% url 'public_gate:home' %}">Home</a></li>
                 {% if perms.public_gate.add_user %}
                     <li><a href="{% url 'public_gate:users' %}">Users</a></li>
                 {% endif %}
