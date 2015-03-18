@@ -18,7 +18,7 @@ OpenMDM uses open source projects to work properly:
 
 ### Installation
 
-Requiremens :  
+Requirements :  
 
 * [Python 3.4](https://www.python.org/downloads/release/python-343/)
 * [Django 1.7](https://docs.djangoproject.com/fr/1.7/topics/install/)
