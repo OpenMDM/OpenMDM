@@ -1,0 +1,9 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+<a class="navbar-brand" href="{% url 'public_gate:home' %}">OpenMDM</a>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
