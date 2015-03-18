@@ -1,6 +1,16 @@
 {% extends "base_template.html" %}
 
 {% block content %}
+<div class="jumbotron">
+    <div class="container">
+        <h1>OpenMDM Project</h1>
+        <p>
+            This Mobile Device Management platform is open-source and awesome. Check it out !
+        </p>
+        <p><a class="btn btn-primary btn-lg" href="http://blog.hackndo.com/" target="_blank" >Learn more &raquo;</a></p>
+    </div>
+</div>
+<div class="container">
     <div class="row">
         {% if not user.is_authenticated %}
             <h2>You must be logged in</h2>
@@ -9,4 +19,5 @@
             <a href="{% url 'public_gate:property_lists' %}">Your property lists</a>
         {% endif %}
     </div>
+</div>
 {% endblock %}

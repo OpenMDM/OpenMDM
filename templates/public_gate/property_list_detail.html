@@ -1,33 +1,35 @@
 {% extends "base_template.html" %}
 
 {% block content %}
+<div class="container">
     <div class="row">
         <h2>{{ plist.payload_display_name }} (ID : {{ plist.id }}) <a class="btn btn-primary btn-lg" href="{% url 'public_gate:property_list_download' plist.id %}" download="list_{{ plist.payload_uuid }}.plist" >Download &raquo;</a></h2>
-        <p>
-
-        </p>
-        <p>
-            <h3>Description</h3>
-            <p>
-                {{ plist.payload_description }}
-            </p>
-            <h3>Main characteristics</h3>
-            {% for plist in plist_python %}
-                <table class="table table-striped table-condensed">
-                <tr>
-                    <th>Property</th>
-                    <th>Value</th>
-                </tr>
-                {% for field, value in plist.fields.items %}
+            <div>
+                <h3>
+                    Description
+                </h3>
+                <p>
+                    {{ plist.payload_description }}
+                </p>
+                <h3>
+                    Main characteristics
+                </h3>
+                {% for plist in plist_python %}
+                    <table class="table table-striped table-condensed">
                     <tr>
-                        <td>{{ field }}</td>
-                        <td>{{ value }}</td>
+                        <th>Property</th>
+                        <th>Value</th>
                     </tr>
+                    {% for field, value in plist.fields.items %}
+                        <tr>
+                            <td>{{ field }}</td>
+                            <td>{{ value }}</td>
+                        </tr>
+                    {% endfor %}
+                    </table>
                 {% endfor %}
-                </table>
-            {% endfor %}
 
-            {% if dependencies|length > 0 %}
+                {% if dependencies|length > 0 %}
                 <h3>Dependencies</h3>
                 {% for dependency in dependencies_json %}
                     <h4>{{ dependency.model }}</h4>
@@ -47,6 +49,7 @@
             {% else %}
                 <h4>No dependencies</h4>
             {% endif %}
-        </p>
+            </div>
     </div>
+</div>
 {% endblock %}

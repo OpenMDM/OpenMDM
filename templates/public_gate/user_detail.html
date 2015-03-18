@@ -1,6 +1,7 @@
 {% extends "base_template.html" %}
 
 {% block content %}
+<div class="container">
     <div class="row">
         <h2>{{ user.username }} (ID : {{ user.id }})</h2>
         <ul>
@@ -9,4 +10,5 @@
             <li>Email address : {{ user.email }}
         </ul>
     </div>
+</div>
 {% endblock %}

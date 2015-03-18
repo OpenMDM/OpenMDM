@@ -1,6 +1,7 @@
 {% extends "base_template.html" %}
 {% load bootstrap %}
 {% block content %}
+<div class="container">
     <div class="row">
         <h2>Add a user</h2>
         <form action="{% url 'public_gate:user_add' %}" method="post">
@@ -9,4 +10,5 @@
             <button class="btn btn-group-lg btn-success" type="submit" value="Add user">Add user</button>
         </form>
     </div>
+</div>
 {% endblock %}

@@ -49,6 +49,9 @@
                 {% endif %}
                 <li><a href="{% url 'public_gate:contact' %}">Contact</a></li>
                 <li><a href="{% url 'public_gate:about' %}">About</a></li>
+                {% if user.is_staff %}
+                    <li><a href="{% url 'admin:index' %}">Admin panel</a></li>
+                {% endif %}
             </ul>
             {% if not user.is_authenticated %}
                 <form class="navbar-form navbar-right" action="{% url 'public_gate:site_login' %}" method="post">
@@ -77,27 +80,17 @@
 </div>
 
 <!-- Main jumbotron for a primary marketing message or call to action -->
-<div class="jumbotron">
-    <div class="container">
-        <h1>OpenMDM Project</h1>
-        <p>
-            This Mobile Device Management platform is open-source and awesome. Check it out !
-        </p>
-        <p><a class="btn btn-primary btn-lg" href="http://blog.hackndo.com/" target="_blank" >Learn more &raquo;</a></p>
-    </div>
-</div>
-
-<div class="container">
 
 
 {% block content %}
 {% endblock %}
+<div class="container">
 
-    <hr>
-    <footer>
-        <p>&copy; OpenMDM Project 2015</p>
-    </footer>
-</div> <!-- /container -->
+<hr>
+<footer>
+    <p>&copy; OpenMDM Project 2015</p>
+</footer>
+</div>
 
 
 <!-- Bootstrap core JavaScript

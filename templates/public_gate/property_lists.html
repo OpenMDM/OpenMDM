@@ -1,6 +1,7 @@
 {% extends "base_template.html" %}
 
 {% block content %}
+<div class="container">
     <div class="row">
         <h2>Property Lists <a class="btn btn-success" href="{% url 'public_gate:property_list_add' %}" >+ Add plist</a></h2>
 
@@ -21,4 +22,5 @@
             {% endfor %}
         </table>
     </div>
+</div>
 {% endblock %}
