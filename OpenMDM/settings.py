@@ -103,5 +103,5 @@ TEMPLATE_DIRS = (
 
 # LDAP Settings
 
-AUTH_LDAP_URI = 'ldap://hackndo.com:389'
-AUTH_LDAP_BASE_DN = 'ou=users,dc=ldap,dc=hackndo,dc=com'
+AUTH_LDAP_URI = CONFIG['local']['ldap']['AUTH_LDAP_URI']
+AUTH_LDAP_BASE_DN = CONFIG['local']['ldap']['AUTH_LDAP_BASE_DN']
