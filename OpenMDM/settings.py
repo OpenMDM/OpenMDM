@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import django_python3_ldap
+from common.local.settings import *
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -69,14 +70,7 @@ WSGI_APPLICATION = 'OpenMDM.wsgi.application'
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'mysql.connector.django',
-        'NAME': 'mdm',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': '127.0.0.1',
-        'PORT': '8889'
-    }
+    'default': CONFIG['local']['database']
 }
 
 # Internationalization
