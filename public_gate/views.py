@@ -93,8 +93,7 @@ def property_lists(request):
     :return render:
     """
     property_lists = PropertyList.objects.order_by('id')
-    context = {'property_lists': property_lists}
-    return render(request, 'public_gate/property_lists.html', context)
+    return render(request, 'public_gate/property_lists.html', dict(property_lists=property_lists))
 
 
 def property_lists_for_user(request, user_id):
@@ -182,8 +181,7 @@ def users(request):
     :return render:
     """
     users = User.objects.order_by('id')
-    context = {'users': users}
-    return render(request, 'public_gate/users.html', context)
+    return render(request, 'public_gate/users.html', dict(users=users))
 
 
 def user_detail(request, user_id):
