@@ -10,7 +10,6 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-import django_python3_ldap
 from common.local.settings import *
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -56,7 +55,6 @@ MIDDLEWARE_CLASSES = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    'django_auth_ldap3.backends.LDAPBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -100,8 +98,3 @@ STATICFILES_DIRS = (
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
-
-# LDAP Settings
-
-AUTH_LDAP_URI = CONFIG['local']['ldap']['AUTH_LDAP_URI']
-AUTH_LDAP_BASE_DN = CONFIG['local']['ldap']['AUTH_LDAP_BASE_DN']
