@@ -54,7 +54,10 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-# AUTHENTICATION_BACKENDS = ("django_python3_ldap.auth.LDAPBackend",)
+AUTHENTICATION_BACKENDS = (
+    'django_auth_ldap3.backends.LDAPBackend',
+    # 'django.contrib.auth.backends.ModelBackend',
+)
 
 ROOT_URLCONF = 'OpenMDM.urls'
 
@@ -106,29 +109,5 @@ TEMPLATE_DIRS = (
 
 # LDAP Settings
 
-# The URL of the LDAP server.
-LDAP_AUTH_URL = "ldap://localhost:389"
-
-# The LDAP search base for looking up users.
-LDAP_AUTH_SEARCH_BASE = "ou=people,dc=example,dc=com"
-
-# The LDAP class that represents a user.
-LDAP_AUTH_OBJECT_CLASS = "inetOrgPerson"
-
-# User model fields mapped to the LDAP
-# attributes that represent them.
-LDAP_AUTH_USER_FIELDS = {
-    "username": "uid",
-    "first_name": "givenName",
-    "last_name": "sn",
-    "email": "mail",
-}
-
-# A tuple of fields used to uniquely identify a user.
-LDAP_AUTH_USER_LOOKUP_FIELDS = ("username",)
-
-# Callable that transforms the user data loaded from
-# LDAP into a form suitable for creating a user.
-# Override this to set custom field formatting for your
-# user model.
-# LDAP_AUTH_CLEAN_USER_DATA = django_python3_ldap.utils.clean_user_data
+AUTH_LDAP_URI = 'ldap://hackndo.com:389'
+AUTH_LDAP_BASE_DN = 'ou=users,dc=ldap,dc=hackndo,dc=com'
