@@ -106,10 +106,10 @@ def property_lists_for_user(request, user_id):
     :return render:
     """
     try:
-        plist = PropertyList.objects.get(user_id=user_id)
+        property_lists = PropertyList.objects.get(user_id=user_id)
     except PropertyList.DoesNotExist:
         return HttpResponse(status=404)
-    return render(request, 'public_gate/property_lists.html', dict(plist=plist))
+    return render(request, 'public_gate/property_lists.html', dict(property_lists=property_lists))
 
 
 def property_list_detail(request, plist_id):
