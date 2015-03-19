@@ -54,9 +54,11 @@ def site_login(request):
     :return render:
     """
     if request.method == "POST":
+        user = None
         user_login = request.POST['login']
         user_password = request.POST['password']
-        user = authenticate(username=user_login, password=user_password)
+        if user_login != "" and user_password != "":
+            user = authenticate(username=user_login, password=user_password)
         if user is not None:
             login(request, user)
             return HttpResponseRedirect(reverse('public_gate:home'))
