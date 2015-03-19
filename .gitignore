@@ -110,9 +110,6 @@ crashlytics-build.properties
 .idea/*
 .idea
 
-#mysql connector
-mysql
-
 OpenMDM/settings.py
 
 common/local
