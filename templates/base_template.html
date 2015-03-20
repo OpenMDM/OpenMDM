@@ -42,7 +42,6 @@
             <ul class="nav navbar-nav">
                 <li><a href="{% url 'public_gate:home' %}">Home</a></li>
                 {% if 'admin' in user.ldap_user.group_names %}
-                    <li><a href="{% url 'public_gate:users' %}">Users</a></li>
                     <li><a href="{% url 'public_gate:property_lists' %}">plists</a></li>
                 {% endif %}
                 <li><a href="{% url 'public_gate:contact' %}">Contact</a></li>
