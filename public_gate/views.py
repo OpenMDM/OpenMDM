@@ -8,7 +8,7 @@ from django.contrib.auth.hashers import (
     make_password)
 from OpenMDM import settings
 
-from public_gate.models import PropertyList, PropertyListForm, UserForm
+from public_gate.models import PropertyList, PropertyListForm, UserForm, Address, Test
 
 
 def home(request):
@@ -17,6 +17,8 @@ def home(request):
     :param request:
     :return render:
     """
+    test = Test(username="Romain", date_inscription="2014-07-07", address=Address(city="Paris", street="Water street", zip="75016"))
+    test.save()
     d = {}
     return render(request, 'public_gate/home.html', d)
 

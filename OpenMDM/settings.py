@@ -13,6 +13,8 @@ import os
 import ldap
 from common.local.settings import *
 from django_auth_ldap.config import LDAPSearch, GroupOfNamesType, PosixGroupType
+from mongoengine import connect
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -123,3 +125,5 @@ AUTH_LDAP_GROUP_SEARCH = LDAPSearch("ou=groups,dc=ldap,dc=hackndo,dc=com",
 )
 AUTH_LDAP_GROUP_TYPE = PosixGroupType()
 AUTH_LDAP_REQUIRE_GROUP = "cn=finance,ou=groups,dc=ldap,dc=hackndo,dc=com"
+
+connect('mdm')

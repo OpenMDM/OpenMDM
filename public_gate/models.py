@@ -8,8 +8,22 @@ from django.contrib.auth.models import User
 
 from django.db import models
 from django import forms
+from mongoengine import *
 
 from common.utils.PropertyList import format_object_to_plist
+
+
+
+class Address(EmbeddedDocument):
+    street = StringField(max_length=100)
+    city = StringField(max_length=100)
+    zip = IntField()
+
+
+class Test(Document):
+    username = StringField(max_length=100)
+    date_inscription = DateTimeField(help_text='Sign-in date')
+    address = EmbeddedDocumentField(Address)
 
 
 class BaseModel(models.Model):
