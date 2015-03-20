@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
 from django.contrib.auth.hashers import (
     make_password)
+from OpenMDM import settings
 
 from public_gate.models import PropertyList, PropertyListForm, UserForm
 
@@ -96,7 +97,7 @@ def property_lists(request):
     return render(request, 'public_gate/property_lists.html', dict(property_lists=property_lists))
 
 
-def property_lists_for_user(request, user_id):
+def property_lists_for_user(request):
     """
     Fetches plists for specific user
     From: user/<user_id>/property_list/
@@ -104,10 +105,16 @@ def property_lists_for_user(request, user_id):
     :param user_id:
     :return render:
     """
-    try:
-        property_lists = PropertyList.objects.get(user_id=user_id)
-    except PropertyList.DoesNotExist:
-        return HttpResponse(status=404)
+    property_lists = {}
+    if settings.RETRIEVE_PLIST_FROM_GROUPS == "all":
+        groups = request.user.ldap_user.group_names
+    else:
+        groups = {request.user.ldap_user.attrs['gidnumber'][0]}
+    print(groups)
+    #try:
+    #    property_lists = PropertyList.objects.get(group_name=user_id)
+    #except PropertyList.DoesNotExist:
+    #    return HttpResponse(status=404)
     return render(request, 'public_gate/property_lists.html', dict(property_lists=property_lists))
 
 

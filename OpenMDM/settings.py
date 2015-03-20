@@ -10,7 +10,9 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import ldap
 from common.local.settings import *
+from django_auth_ldap.config import LDAPSearch, GroupOfNamesType, PosixGroupType
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -41,7 +43,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'bootstrapform',
     'public_gate',
-    'django_python3_ldap',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -55,7 +56,8 @@ MIDDLEWARE_CLASSES = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
+    'django_auth_ldap.backend.LDAPBackend',
+    # 'django.contrib.auth.backends.ModelBackend',
 )
 
 ROOT_URLCONF = 'OpenMDM.urls'
@@ -98,3 +100,26 @@ STATICFILES_DIRS = (
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
+
+# plist group
+
+# RETRIEVE_PLIST_FROM_GROUPS = "all"
+RETRIEVE_PLIST_FROM_GROUPS = "first"
+
+# LDAP
+
+AUTH_LDAP_SERVER_URI = "ldap://hackndo.com"
+# Diect bind
+# AUTH_LDAP_USER_DN_TEMPLATE = "cn=%(user)s,ou=users,dc=ldap,dc=hackndo,dc=com"
+# Search / Bind
+AUTH_LDAP_BIND_DN = "cn=John Doe,ou=users,dc=ldap,dc=hackndo,dc=com"
+AUTH_LDAP_BIND_PASSWORD = "test"
+AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=users,dc=ldap,dc=hackndo,dc=com",
+    ldap.SCOPE_SUBTREE, "(cn=%(user)s)")
+
+# Finding groups
+AUTH_LDAP_GROUP_SEARCH = LDAPSearch("ou=groups,dc=ldap,dc=hackndo,dc=com",
+    ldap.SCOPE_SUBTREE, "(objectClass=posixGroup)"
+)
+AUTH_LDAP_GROUP_TYPE = PosixGroupType()
+AUTH_LDAP_REQUIRE_GROUP = "cn=finance,ou=groups,dc=ldap,dc=hackndo,dc=com"
