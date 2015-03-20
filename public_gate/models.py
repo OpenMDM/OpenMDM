@@ -28,11 +28,7 @@ class Test(Document):
     address = EmbeddedDocumentField(Address)
 
 
-class plist(Document):
-    file_location = StringField(max_length=200)
-    content = StringField(max_length=100000)
-    group_id = StringField(max_length=100)
-    group_name = StringField(max_length=100)
+
 
 
 
@@ -218,14 +214,42 @@ class UserForm(forms.ModelForm):
                   ]
 
 
+class Plist(DynamicDocument):
+    file_location = StringField(max_length=200)
+    group_name = StringField(max_length=100)
+
+    def __str__(self):
+        return "Plist " + str(self.file_location) + " for group " + str(self.group_name)
+
+    def generate(self):
+        """
+        Generate an plist file from a PropertyList object
+        """
+        dictionary = self.to_mongo().to_dict()
+        dictionary['_id'] = str(dictionary['_id'])
+        result = {'payloadContent': dictionary}
+        return dumps(result)
+
+
 class RecipeForm():
     def __init__(self, recipe_name=None, data=None):
-        self.recipe_dict = plistlib.load(open(os.path.dirname(__file__) + "/../recipe/" + recipe_name, 'rb'), fmt=plistlib.FMT_XML)
+        self.recipe_path = os.path.dirname(__file__) + "/../recipe/" + recipe_name
+        self.recipe_dict = plistlib.load(open(self.recipe_path, 'rb'), fmt=plistlib.FMT_XML)
+        self.form_answer = {}
+        self.plist = Plist()
+        # If form is filled out
         if data is not None:
+
+            # We parse the expected outputs from the recipe
             for key, value in self.recipe_dict['outputs'].items():
-                print("Value : " + value)
-                print(self.get_value_from_post_data(value, data))
-            print("ok")
+
+                # And we fill an answer dictionary (in case of roll back)
+                self.form_answer[key] = self.get_value_from_post_data(value, data)
+                setattr(self.plist, key, self.get_value_from_post_data(value, data))
+
+            # Then we add hook information
+            self.plist.file_location = self.recipe_path
+            self.plist.group_name = data.get("group_id")
 
     def get_value_from_post_data(self, value, data):
         # $key?(yes):(no)
@@ -283,13 +307,8 @@ class RecipeForm():
         if match:
             return match.group(1)
 
-
-
-    def get_form(self):
-        return self.html_output()
-
     def save(self):
-        print(self)
+        self.plist.save()
 
     @staticmethod
     def display_input(input_type, key, required, values, default_value, saved_value):
@@ -302,53 +321,62 @@ class RecipeForm():
         :param default_value:
         :return string:
         """
-        input = '<input type="{type}" class="{input_class}" name="{name}"{required}{checked} value="{value}" id="{id}">'
+        current_input = '<input type="{type}" ' \
+                        'class="{input_class}" ' \
+                        'name="{name}"' \
+                        '{required}' \
+                        '{checked} ' \
+                        'value="{value}" ' \
+                        'id="{id}">'
         if input_type == "string":
-            input = input.format(id=key,
-                                 type="text",
-                                 input_class="form-control",
-                                 name=key,
-                                 required=" required" if required else "",
-                                 checked="",
-                                 value=saved_value if saved_value is not None
-                                 else default_value if default_value is not None
-                                 else "")
+            current_input = current_input.format(id=key,
+                                                 type="text",
+                                                 input_class="form-control",
+                                                 name=key,
+                                                 required=" required" if required else "",
+                                                 checked="",
+                                                 value=saved_value if saved_value is not None
+                                                 else default_value if default_value is not None
+                                                 else "")
         if input_type == "boolean":
-            input = input.format(id=key,
-                                 type="checkbox",
-                                 input_class="",
-                                 name=key,
-                                 required="",
-                                 checked=" checked" if saved_value is not None and saved_value
-                                 else "" if saved_value is not None and not saved_value
-                                 else " checked" if default_value
-                                 else "",
-                                 value="True")
+            current_input = current_input.format(id=key,
+                                                 type="checkbox",
+                                                 input_class="",
+                                                 name=key,
+                                                 required="",
+                                                 checked=" checked" if saved_value is not None and saved_value
+                                                 else "" if saved_value is not None and not saved_value
+                                                 else " checked" if default_value
+                                                 else "",
+                                                 value="True")
         if input_type == "integer":
-            input = input.format(id=key,
-                                 type="number",
-                                 input_class="form-control",
-                                 name=key,
-                                 required=" required" if required else "",
-                                 checked="",
-                                 value=saved_value if saved_value is not None
-                                 else default_value if default_value is not None
-                                 else "")
+            current_input = current_input.format(id=key,
+                                                 type="number",
+                                                 input_class="form-control",
+                                                 name=key,
+                                                 required=" required" if required else "",
+                                                 checked="",
+                                                 value=saved_value if saved_value is not None
+                                                 else default_value if default_value is not None
+                                                 else "")
         if input_type == "list":
-            input = '<select class="form-control" name="{name}"{required} id="{id}">'.format(name=key,
+            select = []
+            select.append('<select class="form-control" name="{name}"{required} id="{id}">'.format(name=key,
                                                                                              required=" required"
                                                                                              if required
                                                                                              else "",
-                                                                                             id=key)
+                                                                                             id=key))
             for value in values:
-                input += '<option value="{value}"{selected}>'.format(value=value['value'],
+                select.append('<option value="{value}"{selected}>'.format(value=value['value'],
                                                                      selected=" selected"
                                                                      if saved_value == value['value']
-                                                                     else "")
-                input += value['title']
-                input += "</option>"
-            input += '</select>'
-        return input
+                                                                     else ""))
+
+                select.append(value['title'])
+                select.append("</option>")
+            select.append('</select>')
+            current_input = "\n".join(select)
+        return current_input
 
     @staticmethod
     def check_key(obj, key):
@@ -371,29 +399,30 @@ class RecipeForm():
         if type(obj).__name__ == "dict":
             if "type" in obj.keys():
                 if obj['type'] == "group":
-                    form += '<fieldset><legend>{title}</legend>'.format(title=obj['title'])
+                    form.append('<fieldset><legend>{title}</legend>'.format(title=obj['title']))
                     form = RecipeForm.create_form(obj['content'], form)
-                    form += '</fieldset>'
+                    form.append('</fieldset>')
                 else:
-                    form += '<div class="form-group">'
-                    form += '<label'
+                    form.append('<div class="form-group">')
+                    label = '<label'
                     if obj['type'] != "boolean":
-                        form += ' for="{id}"'.format(id=obj['key'])
-                        form += '>{title}</label>'.format(title=obj['title'])
+                        label += ' for="{id}"'.format(id=obj['key'])
+                        label += '>{title}</label>'.format(title=obj['title'])
                     else:
-                        form += '>'
+                        label += '>'
+                    form.append(label)
 
                     if RecipeForm.check_key(obj, "description") is not None:
-                        form += '<p class="help-block">{description}</p>'.format(description=obj['description'])
-                    form += RecipeForm.display_input(input_type=obj['type'],
+                        form.append('<p class="help-block">{description}</p>'.format(description=obj['description']))
+                    form.append(RecipeForm.display_input(input_type=obj['type'],
                                                      key=RecipeForm.check_key(obj, "key"),
                                                      required=RecipeForm.check_key(obj, "required"),
                                                      values=RecipeForm.check_key(obj, "values"),
                                                      default_value=RecipeForm.check_key(obj, "default_value"),
-                                                     saved_value=None)
+                                                     saved_value=None))
                     if obj['type'] == "boolean":
-                        form += ' {title}</label>'.format(title=obj['title'])
-                    form += '</div>'
+                        form.append(' {title}</label>'.format(title=obj['title']))
+                    form.append('</div>')
             else:
                 for key, value in obj.items():
                     if type(value).__name__ in ("dict", "list"):
@@ -405,14 +434,14 @@ class RecipeForm():
         return form
 
     def html_output(self):
-        form = RecipeForm.create_form(self.recipe_dict, "")
-        form += '<div class="form-group">'
-        form += '<label for=group_id>Applies to group</label>'
-        form += '<select class="form-control" name="group_id" required id="group_id">'
+        form = RecipeForm.create_form(self.recipe_dict, [])
+        form.append('<div class="form-group">')
+        form.append('<label for=group_id>Applies to group</label>')
+        form.append('<select class="form-control" name="group_id" required id="group_id">')
         for group in CONFIG['local']['ldap']['GROUPS']:
-            form += '<option value="{value}">'.format(value=group)
-            form += group
-            form += "</option>"
-        form += '</select>'
-        form += '</div>'
-        return form
+            form.append('<option value="{value}">'.format(value=group))
+            form.append(group)
+            form.append("</option>")
+        form.append('</select>')
+        form.append('</div>')
+        return "\n".join(form)

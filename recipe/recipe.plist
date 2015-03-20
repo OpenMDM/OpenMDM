@@ -216,7 +216,7 @@
 					<key>title</key>
 					<string>Adresse</string>
 					<key>key</key>
-					<string>OutgoingMailServerAuthentication</string>
+					<string>OutgoingMailServerAddress</string>
 					<key>required</key>
 					<true/>
 				</dict>
@@ -303,7 +303,7 @@
 		<key>OutgoingPasswordSameAsIncomingPassword</key>
 		<string>$OutgoingMailServerAuthentication?(@YES):(@NO)</string>
 		<key>OutgoingMailServerHostName</key>
-		<string>$OutgoingMailServerHostName</string>
+		<string>$OutgoingMailServerAddress</string>
 		<key>OutgoingMailServerPortNumber</key>
 		<string>$OutgoingMailServerPortNumber?</string>
 		<key>OutgoingMailServerUseSSL</key>

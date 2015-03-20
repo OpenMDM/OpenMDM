@@ -6,8 +6,22 @@
         <h2>Add a Property list</h2>
         <form action="{% url 'public_gate:property_list_add' %}" method="post">
             {% csrf_token %}
-            {{ form | bootstrap }}
-            <button class="btn btn-group-lg btn-success" type="submit" value="Add user">Add plist</button>
+            {% if not form %}
+                <div class="form-group">
+                    <select class="form-control" name="file">
+                        {% for file in files %}
+                            <option value="{{ file }}">{{ file }}</option>
+                        {% endfor %}
+                    </select>
+                    <button class="btn btn-group-lg btn-success" type="submit" value="select_recipe">Select recipe</button>
+                </div>
+            {% else %}
+                <form action="{% url 'public_gate:test' %}" method="post">
+                    {% csrf_token %}
+                    {{ form | safe }}
+                    <button class="btn btn-group-lg btn-success" type="submit" value="Add plist">Add plist</button>
+                </form>
+            {% endif %}
         </form>
     </div>
 </div>
