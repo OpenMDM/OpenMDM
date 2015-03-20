@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>format_version</key>
+	<integer>1</integer>
+	<key>uuid</key>
+	<string>7CE77384-C979-4965-9639-3B182E7F7D6E</string>
+	<key>recipe_version</key>
+	<integer>1</integer>
+	<key>display_name</key>
+	<string>Compte E-mail (POP/IMAP)</string>
+	<key>output_type</key>
+	<string>plist</string>
+	<key>target_os</key>
+	<array>
+		<dict>
+			<key>name</key>
+			<string>ios</string>
+			<key>minimum_version</key>
+			<string>5</string>
+			<key>maximum_version</key>
+			<string>-1</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>osx</string>
+			<key>minimum_version</key>
+			<string>10.7</string>
+			<key>maximum_version</key>
+			<string>-1</string>
+		</dict>
+	</array>
+	<key>allowed_target</key>
+	<array>
+		<string>user</string>
+		<string>device</string>
+	</array>
+	<key>inputs</key>
+	<array>
+		<dict>
+			<key>type</key>
+			<string>string</string>
+			<key>title</key>
+			<string>Description</string>
+			<key>key</key>
+			<string>EmailAccountDescription</string>
+			<key>description</key>
+			<string>Ce nom permet de distinguer le compte dans le client e-mail</string>
+			<key>required</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>type</key>
+			<string>string</string>
+			<key>title</key>
+			<string>Nom de l&apos;expéditeur</string>
+			<key>key</key>
+			<string>EmailAccountName</string>
+			<key>description</key>
+			<string>Ce nom est affiché dans les messages sortant comme celui de l&apos;expéditeur</string>
+			<key>required</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>type</key>
+			<string>string</string>
+			<key>title</key>
+			<string>Identifiant</string>
+			<key>key</key>
+			<string>AccountIdentifier</string>
+			<key>description</key>
+			<string>Identifiant de connexion au service de messagerie (envois et réception)</string>
+			<key>required</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>type</key>
+			<string>string</string>
+			<key>title</key>
+			<string>Mot de passe</string>
+			<key>key</key>
+			<string>AccountPassword</string>
+			<key>description</key>
+			<string>Mot de passe du compte, si laisser vide, l&apos;utilisateur devra le renseigner sur son terminal</string>
+			<key>required</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>type</key>
+			<string>group</string>
+			<key>title</key>
+			<string>Serveur de réception</string>
+			<key>description</key>
+			<string>Spécifiez ici les informations de votre serveurs de réception.</string>
+			<key>content</key>
+			<array>
+				<dict>
+					<key>type</key>
+					<string>list</string>
+					<key>title</key>
+					<string>Type de serveur</string>
+					<key>description</key>
+					<string>Indiquez le type de serveur de réception utilisé</string>
+					<key>key</key>
+					<string>EmailAccountType</string>
+					<key>values</key>
+					<array>
+						<dict>
+							<key>value</key>
+							<string>EmailTypePOP</string>
+							<key>title</key>
+							<string>POP3</string>
+						</dict>
+						<dict>
+							<key>value</key>
+							<string>EmailTypeIMAP</string>
+							<key>title</key>
+							<string>IMAP</string>
+						</dict>
+					</array>
+					<key>required</key>
+					<true/>
+				</dict>
+				<dict>
+					<key>type</key>
+					<string>string</string>
+					<key>title</key>
+					<string>Adresse</string>
+					<key>key</key>
+					<string>IncomingMailServerHostName</string>
+					<key>required</key>
+					<true/>
+				</dict>
+				<dict>
+					<key>type</key>
+					<string>integer</string>
+					<key>title</key>
+					<string>Port</string>
+                    <key>default_value</key>
+                    <integer>143</integer>
+					<key>description</key>
+					<string>Si aucune valeur n&apos;est indiqué, les ports par défaut seront utilisés</string>
+					<key>key</key>
+					<string>IncomingMailServerPortNumber</string>
+					<key>required</key>
+					<false/>
+				</dict>
+				<dict>
+					<key>type</key>
+					<string>list</string>
+					<key>title</key>
+					<string>Nécessite une connexion authentifié</string>
+					<key>description</key>
+					<string>Si oui, les identifiants défini précedemment seront utilisés</string>
+					<key>key</key>
+					<string>IncomingMailServerAuthentication</string>
+					<key>values</key>
+					<array>
+						<dict>
+							<key>value</key>
+							<string>EmailAuthPassword</string>
+							<key>title</key>
+							<string>Oui</string>
+						</dict>
+						<dict>
+							<key>value</key>
+							<string>EmailAuthNone</string>
+							<key>title</key>
+							<string>Non</string>
+						</dict>
+					</array>
+					<key>required</key>
+					<true/>
+				</dict>
+				<dict>
+					<key>type</key>
+					<string>boolean</string>
+					<key>title</key>
+					<string>Use SSL</string>
+					<key>description</key>
+					<string>Par défaut, les communications seront chiffrés</string>
+					<key>key</key>
+					<string>IncomingMailServerUseSSL</string>
+					<key>required</key>
+					<false/>
+					<key>default_value</key>
+					<false/>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>type</key>
+			<string>group</string>
+			<key>title</key>
+			<string>Serveur d&apos;envois</string>
+			<key>description</key>
+			<string>Spécifiez ici les informations de votre serveurs d&apos;envois.</string>
+			<key>content</key>
+			<array>
+				<dict>
+					<key>type</key>
+					<string>string</string>
+					<key>title</key>
+					<string>Adresse</string>
+					<key>key</key>
+					<string>OutgoingMailServerAuthentication</string>
+					<key>required</key>
+					<true/>
+				</dict>
+				<dict>
+					<key>type</key>
+					<string>integer</string>
+					<key>title</key>
+					<string>
+
+                    </string>
+					<key>description</key>
+					<string>Si aucune valeur n&apos;est indiqué, les ports par défaut seront utilisés</string>
+					<key>key</key>
+					<string>OutgoingMailServerPortNumber</string>
+					<key>required</key>
+					<false/>
+				</dict>
+				<dict>
+					<key>type</key>
+					<string>list</string>
+					<key>title</key>
+					<string>Nécessite une connexion authentifié</string>
+					<key>description</key>
+					<string>Si oui, les identifiants défini précedemment seront utilisés</string>
+					<key>key</key>
+					<string>OutgoingMailServerAuthentication</string>
+					<key>values</key>
+					<array>
+						<dict>
+							<key>value</key>
+							<string>EmailAuthPassword</string>
+							<key>title</key>
+							<string>Oui</string>
+						</dict>
+						<dict>
+							<key>value</key>
+							<string>EmailAuthNone</string>
+							<key>title</key>
+							<string>Non</string>
+						</dict>
+					</array>
+					<key>required</key>
+					<true/>
+				</dict>
+				<dict>
+					<key>type</key>
+					<string>boolean</string>
+					<key>title</key>
+					<string>Use SSL</string>
+					<key>description</key>
+					<string>Par défaut, les communications seront chiffrés</string>
+					<key>key</key>
+					<string>OutgoingMailServerUseSSL</string>
+					<key>required</key>
+					<false/>
+					<key>default_value</key>
+					<true/>
+				</dict>
+			</array>
+		</dict>
+	</array>
+	<key>outputs</key>
+	<dict>
+		<key>EmailAccountDescription</key>
+		<string>$EmailAccountDescription?</string>
+		<key>EmailAccountName</key>
+		<string>$EmailAccountName?</string>
+		<key>EmailAccountType</key>
+		<string>$EmailAccountType</string>
+		<key>EmailAddress</key>
+		<string>$EmailAddress</string>
+		<key>IncomingMailServerAuthentication</key>
+		<string>$IncomingMailServerAuthentication</string>
+		<key>IncomingMailServerHostName</key>
+		<string>$IncomingMailServerHostName</string>
+		<key>IncomingMailServerPortNumber</key>
+		<string>$IncomingMailServerPortNumber?</string>
+		<key>IncomingMailServerUseSSL</key>
+		<string>$IncomingMailServerUseSSL?</string>
+		<key>IncomingMailServerUsername</key>
+		<string>$AccountIdentifier</string>
+		<key>IncomingPassword</key>
+		<string>$AccountPassword?</string>
+		<key>OutgoingMailServerAuthentication</key>
+		<string>$OutgoingMailServerAuthentication</string>
+		<key>OutgoingPasswordSameAsIncomingPassword</key>
+		<string>$OutgoingMailServerAuthentication?(@YES):(@NO)</string>
+		<key>OutgoingMailServerHostName</key>
+		<string>$OutgoingMailServerHostName</string>
+		<key>OutgoingMailServerPortNumber</key>
+		<string>$OutgoingMailServerPortNumber?</string>
+		<key>OutgoingMailServerUseSSL</key>
+		<string>$OutgoingMailServerUseSSL?</string>
+	</dict>
+</dict>
+</plist>
