@@ -1,7 +1,9 @@
 # OpenMDM Project
 
 OpenMDM Project is an Open-Source Mobile Device Management project, initially developed to support iOS devices, but built in order to be easily extended with multiple device types.  
-It's written in Python 3.4 (and needs to be used with Python 3.X)
+Language : Python 3.4  
+Authentication : LDAP3  
+Storage : MongoDB  
 
 ### Version
 
@@ -12,7 +14,8 @@ It's written in Python 3.4 (and needs to be used with Python 3.X)
 OpenMDM uses open source projects to work properly:
 
 * [Django](https://www.djangoproject.com/)  
-* [Django Python3 LDAP](https://pypi.python.org/pypi/django-python3-ldap/0.9.1)
+* [Django Auth Ldap](https://pypi.python.org/pypi/django-auth-ldap/1.2.5)
+* [MongoEngine](https://pypi.python.org/pypi/mongoengine/0.8.7)
 * [Django admin bootstrapped](https://pypi.python.org/pypi/django-admin-bootstrapped/)
 * [Twitter Bootstrap](http://twitter.github.com/bootstrap/)  
 
@@ -20,18 +23,20 @@ OpenMDM uses open source projects to work properly:
 
 ![alt tag](http://hackndo.com/archi.jpg) 
 
-### Installation
-
-Requirements :  
+### Requirements
 
 * [Python 3.4](https://www.python.org/downloads/release/python-343/)
 * [Django 1.7](https://docs.djangoproject.com/fr/1.7/topics/install/)
-* [MySQL](http://www.mysql.com/downloads/) with *mdm* database
-* [MySQL - Python connector](https://pypi.python.org/pypi/mysql-connector-python/2.0.3)
+* [MongoDB](https://www.mongodb.org/)
+
+### Installation
+
 
 ```sh
 $ pip3.4 install django-admin-bootstrapped
-$ pip3.4 install django-python3-ldap
+$ pip3.4 install git+https://github.com/rbarrois/python-ldap.git@py3
+$ pip3.4 install django-auth-ldap
+$ pip3.4 install mongoengine
 $ git clone https://github.com/betezed/MobileDeviceManagement.git OpenMDM
 $ cd OpenMDM
 $ sudo ./configure.sh
