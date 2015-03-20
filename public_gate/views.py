@@ -7,6 +7,11 @@ from django.core import serializers
 from django.contrib.auth.hashers import (
     make_password)
 from OpenMDM import settings
+from common.utils import Recipe
+import plistlib
+import os
+
+
 
 from public_gate.models import PropertyList, PropertyListForm, UserForm, Address, Test
 
@@ -41,6 +46,20 @@ def contact(request):
     """
     d = {}
     return render(request, 'public_gate/contact.html', d)
+
+
+def test(request):
+    """
+    Displays an example form, created from a hard-coded recipe (in recipe folder).
+    This is for testing purpose only
+    From : test/
+    :param request:
+    :return render:
+    """
+    dir = os.path.dirname(__file__)
+    dictionary = plistlib.load(open(dir + "/../recipe/recipe.plist", 'rb'), fmt=plistlib.FMT_XML)
+    form = Recipe.create_form(dictionary, "")
+    return render(request, 'public_gate/test.html', dict(form=form))
 
 
 ########################################################################

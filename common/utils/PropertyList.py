@@ -28,3 +28,4 @@ def underscore_to_camel_case(match):
     Transforms python-like variable (with _ separator) to plist-like variable (camel-cased)
     """
     return match.group(1).upper()
+
