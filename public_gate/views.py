@@ -99,7 +99,8 @@ def property_lists(request):
     :param request: 
     :return render:
     """
-    property_lists = PropertyList.objects.order_by('id')
+    property_lists = Plist.objects.all()
+    print(property_lists)
     return render(request, 'public_gate/property_lists.html', dict(property_lists=property_lists))
 
 
