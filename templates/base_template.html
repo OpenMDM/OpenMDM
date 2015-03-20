@@ -41,15 +41,13 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li><a href="{% url 'public_gate:home' %}">Home</a></li>
-                {% if perms.public_gate.add_user %}
+                {% if 'admin' in user.ldap_user.group_names %}
                     <li><a href="{% url 'public_gate:users' %}">Users</a></li>
-                {% endif %}
-                {% if perms.public_gate.add_propertylist %}
                     <li><a href="{% url 'public_gate:property_lists' %}">plists</a></li>
                 {% endif %}
                 <li><a href="{% url 'public_gate:contact' %}">Contact</a></li>
                 <li><a href="{% url 'public_gate:about' %}">About</a></li>
-                {% if user.is_staff %}
+                {% if False %}
                     <li><a href="{% url 'admin:index' %}">Admin panel</a></li>
                 {% endif %}
             </ul>

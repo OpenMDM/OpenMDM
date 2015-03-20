@@ -1,3 +1,6 @@
+from common.local.settings import CONFIG
+
+
 def display_input(input_type, key, required, values, default_value):
     """
     Creates HTML input, depending of the entry type
@@ -35,8 +38,10 @@ def display_input(input_type, key, required, values, default_value):
                              value=default_value if default_value is not None else "")
     if input_type == "list":
         input = '<select class="form-control" name="{name}"{required} id="{id}">'.format(name=key,
-                                                                    required=" required" if required else "",
-                                                                    id=key)
+                                                                                         required=" required"
+                                                                                         if required
+                                                                                         else "",
+                                                                                         id=key)
         for value in values:
             input += '<option value="{value}">'.format(value=value['value'])
             input += value['title']
@@ -95,4 +100,18 @@ def create_form(obj, form):
         for value in obj:
             if type(value).__name__ in ("dict", "list"):
                 form = create_form(value, form)
+    return form
+
+
+def get_form_from_dictionary(dictionary):
+    form = create_form(dictionary, "")
+    form += '<div class="form-group">'
+    form += '<label for=group_id>Applies to group</label>'
+    form += '<select class="form-control" name="group_id" required id="group_id">'
+    for group in CONFIG['local']['ldap']['GROUPS']:
+        form += '<option value="{value}">'.format(value=group)
+        form += group
+        form += "</option>"
+    form += '</select>'
+    form += '</div>'
     return form

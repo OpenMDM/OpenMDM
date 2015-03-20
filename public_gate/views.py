@@ -7,13 +7,14 @@ from django.core import serializers
 from django.contrib.auth.hashers import (
     make_password)
 from OpenMDM import settings
+from common.local.settings import CONFIG
 from common.utils import Recipe
 import plistlib
 import os
 
 
 
-from public_gate.models import PropertyList, PropertyListForm, UserForm, Address, Test
+from public_gate.models import PropertyList, PropertyListForm, UserForm, Address, Test, RecipeForm
 
 
 def home(request):
@@ -56,9 +57,17 @@ def test(request):
     :param request:
     :return render:
     """
-    dir = os.path.dirname(__file__)
-    dictionary = plistlib.load(open(dir + "/../recipe/recipe.plist", 'rb'), fmt=plistlib.FMT_XML)
-    form = Recipe.create_form(dictionary, "")
+    if request.method == 'POST':
+        # print(request.POST)
+        form = RecipeForm(recipe_name="recipe.plist",
+                          data=request.POST)
+        #if form.is_valid():
+        #    form.save()
+        #    form = PropertyListForm()
+        form = RecipeForm("recipe.plist").get_form()
+    else:
+        form = RecipeForm("recipe.plist").get_form()
+
     return render(request, 'public_gate/test.html', dict(form=form))
 
 

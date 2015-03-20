@@ -38,6 +38,18 @@
 	</array>
 	<key>inputs</key>
 	<array>
+        <dict>
+			<key>type</key>
+			<string>string</string>
+			<key>title</key>
+			<string>Email</string>
+			<key>key</key>
+			<string>EmailAddress</string>
+			<key>description</key>
+			<string>L'adresse mail du client</string>
+			<key>required</key>
+			<false/>
+		</dict>
 		<dict>
 			<key>type</key>
 			<string>string</string>
@@ -212,9 +224,7 @@
 					<key>type</key>
 					<string>integer</string>
 					<key>title</key>
-					<string>
-
-                    </string>
+					<string>Port</string>
 					<key>description</key>
 					<string>Si aucune valeur n&apos;est indiqué, les ports par défaut seront utilisés</string>
 					<key>key</key>
