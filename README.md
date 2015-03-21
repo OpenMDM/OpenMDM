@@ -38,7 +38,13 @@ p = _FORMATS[fmt]['parser'](use_builtin_types=use_builtin_types,dict_type=dict_t
 
 ### Installation
 
+NOT mac users
+```sh
+sudo apt-get install libldap2-dev
+sudo apt-get install libsasl2-dev
+```
 
+ALL users
 ```sh
 $ pip3.4 install django-admin-bootstrapped
 $ pip3.4 install git+https://github.com/rbarrois/python-ldap.git@py3
