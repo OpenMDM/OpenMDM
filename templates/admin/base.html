@@ -67,9 +67,6 @@
                 <div id="header-navbar-collapse" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-left">
                         <li><a href="{% url 'public_gate:home' %}">Home</a></li>
-                        {% if perms.public_gate.add_user %}
-                            <li><a href="{% url 'public_gate:users' %}">Users</a></li>
-                        {% endif %}
                         {% if perms.public_gate.add_propertylist %}
                             <li><a href="{% url 'public_gate:property_lists' %}">plists</a></li>
                         {% endif %}

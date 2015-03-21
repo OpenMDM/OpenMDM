@@ -3,52 +3,30 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <h2>{{ plist.payload_display_name }} (ID : {{ plist.id }}) <a class="btn btn-primary btn-lg" href="{% url 'public_gate:property_list_download' plist.id %}" download="list_{{ plist.payload_uuid }}.plist" >Download &raquo;</a></h2>
+        <h2>{{ plist.display_name }} (ID : {{ plist.id }}) <a class="btn btn-primary btn-lg" href="{% url 'public_gate:property_list_download' plist.id %}" download="list_{{ plist.uuid }}.plist" >Download &raquo;</a></h2>
             <div>
                 <h3>
                     Description
                 </h3>
                 <p>
-                    {{ plist.payload_description }}
+                    {{ plist.display_name }}
                 </p>
                 <h3>
-                    Main characteristics
+                    Characteristics
                 </h3>
-                {% for plist in plist_python %}
-                    <table class="table table-striped table-condensed">
+                <table class="table table-striped table-condensed">
+                <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+                </tr>
+                {% load app_filters %}
+                {% for key in plist %}
                     <tr>
-                        <th>Property</th>
-                        <th>Value</th>
+                        <td>{{ key }}</td>
+                        <td>{{ plist|get_item:key }}</td>
                     </tr>
-                    {% for field, value in plist.fields.items %}
-                        <tr>
-                            <td>{{ field }}</td>
-                            <td>{{ value }}</td>
-                        </tr>
-                    {% endfor %}
-                    </table>
                 {% endfor %}
-
-                {% if dependencies|length > 0 %}
-                <h3>Dependencies</h3>
-                {% for dependency in dependencies_json %}
-                    <h4>{{ dependency.model }}</h4>
-                    <table class="table table-striped table-condensed">
-                    <tr>
-                        <th>Property</th>
-                        <th>Value</th>
-                    </tr>
-                        {% for field, value in dependency.fields.items %}
-                            <tr>
-                                <td>{{ field }}</td>
-                                <td>{{ value }}</td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                {% endfor %}
-            {% else %}
-                <h4>No dependencies</h4>
-            {% endif %}
+                </table>
             </div>
     </div>
 </div>

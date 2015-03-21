@@ -12,14 +12,9 @@ urlpatterns = patterns('',
     url(r'^logout/$',                                       'public_gate.views.site_logout',                name="site_logout"),
 
     # Property lists
-    url(r'^property_list/$',                                'public_gate.views.property_lists',             name="property_lists"),
-    url(r'^property_list/(?P<plist_id>\d+)/$',              views.property_list_detail,                     name='property_list_detail'),
-    url(r'^property_list/(?P<plist_id>\d+)/download/$',     views.property_list_download,                   name='property_list_download'),
+    url(r'^property_list/$',                                  'public_gate.views.property_lists',             name="property_lists"),
+    url(r'^property_list/(?P<plist_id>[a-z0-9]{24})/$',              views.property_list_detail,                     name='property_list_detail'),
+    url(r'^property_list/(?P<plist_id>[a-z0-9]{24})/download/$',     views.property_list_download,                   name='property_list_download'),
     url(r'^user/property_lists/$',                          'public_gate.views.property_lists_for_user',    name='property_lists_for_user'),
     url(r'^property_list/add/$',                            'public_gate.views.add_property_list',          name="property_list_add"),
-
-    # Users
-    url(r'^client/$',                                       'public_gate.views.users',                      name="users"),
-    url(r'^client/(?P<user_id>\d+)/$',                      views.user_detail,                              name="user_detail"),
-    url(r'^client/add/$',                                   'public_gate.views.add_user',                   name="user_add"),
 )

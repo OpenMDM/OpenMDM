@@ -3,22 +3,24 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <h2>Property Lists <a class="btn btn-success" href="{% url 'public_gate:property_list_add' %}" >+ Add plist</a></h2>
+        <h2>Property Lists{% if 'admin' in user.ldap_user.group_names %} <a class="btn btn-success" href="{% url 'public_gate:property_list_add' %}" >+ Add plist</a>{% endif %}</h2>
 
         <table class="table table-striped">
             <tr>
                 <th>#</th>
                 <th>Name</th>
-                <th>Description</th>
+                <th>Version</th>
                 <th>Status</th>
             </tr>
-            {% for plist in property_lists %}
-                <tr>
-                    <td>{{ plist.id }}</td>
-                    <td><a href="{% url 'public_gate:property_list_detail' plist.id %}">{{ plist.payload_display_name }}</a></td>
-                    <td>{{ plist.payload_description }}</td>
-                    <td><a class="btn btn-primary" href="{% url 'public_gate:property_list_download' plist.id %}" download="list_{{ plist.payload_uuid }}.plist" >Download &raquo;</a></td>
-                </tr>
+            {% for group, plists in property_lists.items %}
+                {% for plist in plists %}
+                    <tr>
+                        <td>{{ plist.id }}</td>
+                        <td><a href="{% url 'public_gate:property_list_detail' plist.id %}">{{ plist.display_name }}</a></td>
+                        <td>{{ plist.version }}</td>
+                        <td><a class="btn btn-primary" href="{% url 'public_gate:property_list_download' plist.id %}" download="list_{{ plist.uuid }}.plist" >Download &raquo;</a></td>
+                    </tr>
+                {% endfor %}
             {% endfor %}
         </table>
     </div>

@@ -1,14 +1,11 @@
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
-from django.contrib.auth.hashers import (
-    make_password)
 from OpenMDM import settings
-
-from public_gate.models import PropertyList, PropertyListForm, UserForm
+import os
+from public_gate.models import RecipeForm, Plist
 
 
 def home(request):
@@ -93,8 +90,9 @@ def property_lists(request):
     :param request: 
     :return render:
     """
-    property_lists = PropertyList.objects.order_by('id')
-    return render(request, 'public_gate/property_lists.html', dict(property_lists=property_lists))
+    property_lists = Plist.objects.all()
+    print(property_lists)
+    return render(request, 'public_gate/property_lists.html', dict(property_lists=dict(all=property_lists)))
 
 
 def property_lists_for_user(request):
@@ -110,11 +108,15 @@ def property_lists_for_user(request):
         groups = request.user.ldap_user.group_names
     else:
         groups = {request.user.ldap_user.attrs['gidnumber'][0]}
-    print(groups)
-    #try:
-    #    property_lists = PropertyList.objects.get(group_name=user_id)
-    #except PropertyList.DoesNotExist:
-    #    return HttpResponse(status=404)
+    for group in groups:
+        plists = Plist.objects(group_name=group)
+        if len(plists) > 0:
+            for plist in plists:
+                plist.id = str(plist.id)
+                print(plist.id)
+            property_lists[group] = Plist.objects(group_name=group)
+        print(property_lists)
+
     return render(request, 'public_gate/property_lists.html', dict(property_lists=property_lists))
 
 
@@ -126,17 +128,9 @@ def property_list_detail(request, plist_id):
     :param plist_id: 
     :return render:
     """
-    try:
-        plist = PropertyList.objects.get(id=plist_id)
-        dependencies = plist.get_dependent_properties()
-    except PropertyList.DoesNotExist:
-        return HttpResponse(status=404)
-    plist_python = serializers.serialize("python", [plist])
-    dependencies_json = serializers.serialize("python", dependencies)
-    return render(request, 'public_gate/property_list_detail.html', dict(plist=plist,
-                                                                         dependencies=dependencies,
-                                                                         plist_python=plist_python,
-                                                                         dependencies_json=dependencies_json))
+
+    plist = Plist.objects(id=plist_id)
+    return render(request, 'public_gate/property_list_detail.html', dict(plist=plist[0]))
 
 
 def property_list_download(request, plist_id):
@@ -147,11 +141,8 @@ def property_list_download(request, plist_id):
     :param plist_id: 
     :return:
     """
-    try:
-        plist = PropertyList.objects.get(id=plist_id)
-        plist = plist.generate()
-    except PropertyList.DoesNotExist:
-        return HttpResponse(status=404)
+    plist = Plist.objects(id=plist_id)
+    plist = plist[0].generate()
     return render(request, 'public_gate/property_list_download.html', dict(plist=plist), content_type="application/xml")
 
 
@@ -162,63 +153,22 @@ def add_property_list(request):
     :param request:
     :return:
     """
-    if request.method == 'POST':
-        form = PropertyListForm(request.POST)
-        print("POST property")
-        if form.is_valid():
-            form.save()
-            form = PropertyListForm()
+    form = False
+    files = False
+    if request.method == 'POST' and "file" in request.POST:
+        form = RecipeForm(request.POST.get('file')).html_output()
     else:
-        form = PropertyListForm()
-    return render(request, 'public_gate/property_list_add.html', dict(form=form))
-
-
-########################################################################
-#                                                                      #
-#                           User Views
-#                                                                      #
-########################################################################
-
-
-def users(request):
-    """
-    Fetches all users
-    From: user/
-    :param request:
-    :return render:
-    """
-    users = User.objects.order_by('id')
-    return render(request, 'public_gate/users.html', dict(users=users))
-
-
-def user_detail(request, user_id):
-    """
-    Fetches one user
-    From: user/<user_id>/
-    :param request:
-    :param user_id:
-    :return render:
-    """
-    try:
-        user = User.objects.get(id=user_id)
-    except PropertyList.DoesNotExist:
-        return HttpResponse(status=404)
-    return render(request, 'public_gate/user_detail.html', dict(user=user))
-
-
-def add_user(request):
-    """
-    Adds one user
-    From: user/add/
-    :param request:
-    :return render:
-    """
-    if request.method == 'POST':
-        form = UserForm(request.POST)
-        if form.is_valid():
-            # Creates hash with django make_password method
-            form.instance.password = make_password(form.instance.password)
+        if request.method == 'POST':
+            # We save the plist
+            form = RecipeForm(recipe_name="recipe.plist",
+                              data=request.POST)
             form.save()
-    else:
-        form = UserForm()
-    return render(request, 'public_gate/user_add.html', dict(form=form))
+            form = False
+
+        # We display all the recipes available
+        files = []
+        for file in os.listdir(os.path.dirname(__file__) + "/../recipe"):
+            if file.endswith(".plist"):
+                files.append(file)
+    return render(request, 'public_gate/property_list_add.html', dict(files=files,
+                                                                      form=form))
