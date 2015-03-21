@@ -9,6 +9,7 @@
             <tr>
                 <th>#</th>
                 <th>Category</th>
+                <th>Group</th>
                 <th>Name</th>
                 <th>Description</th>
                 <th>Type</th>
@@ -19,6 +20,7 @@
                     <tr>
                         <td>{{ plist.id }}</td>
                         <td>{{ plist.plist.PayloadDisplayName }}</td>
+                        <td>{{ plist.group_name }}</td>
                         <td><a href="{% url 'public_gate:property_list_detail' plist.id %}">{{ plist.plist.PayloadContent.0.PayloadDisplayName }}</a></td>
                         <td>{{ plist.plist.PayloadContent.0.PayloadDescription }}</td>
                         <td>{{ plist.plist.PayloadType }}</td>
