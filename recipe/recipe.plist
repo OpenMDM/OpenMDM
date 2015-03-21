@@ -4,14 +4,22 @@
 <dict>
 	<key>format_version</key>
 	<integer>1</integer>
-	<key>uuid</key>
+	<key>UUID</key>
 	<string>7CE77384-C979-4965-9639-3B182E7F7D6E</string>
-	<key>recipe_version</key>
+	<key>version</key>
 	<integer>1</integer>
 	<key>display_name</key>
 	<string>Compte E-mail (POP/IMAP)</string>
+    <key>description</key>
+	<string>Voici une recette permettant de définir les paramètres mail d'un device</string>
 	<key>output_type</key>
 	<string>plist</string>
+    <key>identifier</key>
+	<string>com.hackndo.plist</string>
+    <key>hackndo</key>
+	<string>plist</string>
+    <key>removal_disallowed</key>
+    <true />
 	<key>target_os</key>
 	<array>
 		<dict>

@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
 from OpenMDM import settings
 import os
-from public_gate.models import RecipeForm, Plist
+from public_gate.models import RecipeForm, Recipe
 
 
 def home(request):
@@ -52,9 +52,11 @@ def site_login(request):
     :return render:
     """
     if request.method == "POST":
+        print("login post")
         user = None
         user_login = request.POST['login']
         user_password = request.POST['password']
+        print(user_login + " " + user_password)
         if user_login != "" and user_password != "":
             user = authenticate(username=user_login, password=user_password)
         if user is not None:
@@ -90,8 +92,7 @@ def property_lists(request):
     :param request: 
     :return render:
     """
-    property_lists = Plist.objects.all()
-    print(property_lists)
+    property_lists = Recipe.objects.all()
     return render(request, 'public_gate/property_lists.html', dict(property_lists=dict(all=property_lists)))
 
 
@@ -109,13 +110,11 @@ def property_lists_for_user(request):
     else:
         groups = {request.user.ldap_user.attrs['gidnumber'][0]}
     for group in groups:
-        plists = Plist.objects(group_name=group)
+        plists = Recipe.objects(group_name=group)
         if len(plists) > 0:
             for plist in plists:
                 plist.id = str(plist.id)
-                print(plist.id)
-            property_lists[group] = Plist.objects(group_name=group)
-        print(property_lists)
+            property_lists[group] = Recipe.objects(group_name=group)
 
     return render(request, 'public_gate/property_lists.html', dict(property_lists=property_lists))
 
@@ -129,7 +128,7 @@ def property_list_detail(request, plist_id):
     :return render:
     """
 
-    plist = Plist.objects(id=plist_id)
+    plist = Recipe.objects(id=plist_id)
     return render(request, 'public_gate/property_list_detail.html', dict(plist=plist[0]))
 
 
@@ -141,7 +140,7 @@ def property_list_download(request, plist_id):
     :param plist_id: 
     :return:
     """
-    plist = Plist.objects(id=plist_id)
+    plist = Recipe.objects(id=plist_id)
     plist = plist[0].generate()
     return render(request, 'public_gate/property_list_download.html', dict(plist=plist), content_type="application/xml")
 

@@ -1,4 +1,4 @@
-from django.test import TestCase, RequestFactory
+from django.test import TestCase, RequestFactory, Client
 from django.contrib.auth.models import AnonymousUser, User
 import public_gate.views as views
 
@@ -16,20 +16,30 @@ class HomeBasicTests(TestCase):
         # Every test needs access to the request factory.
         self.factory = RequestFactory()
         self.user = User.objects.create_user(
-            username='John', email='', password='Doe')
+            username='John Doe',
+            email='',
+            password='test')
+        self.c = Client()
 
-    def test_get_home_logged_out(self):
+    def test_home_responds(self):
         # Create an instance of a GET request.
         request = self.factory.get('/public_gate/home/')
-        request.user = AnonymousUser()
         response = views.home(request)
-        is_logged_out = "Sign in" in response.content.decode()
-        return self.assertTrue(is_logged_out)
+        return self.assertEqual(response.status_code, 200)
 
-    def test_get_home_logged_in(self):
+    def test_plists_responds(self):
         # Create an instance of a GET request.
-        request = self.factory.get('/public_gate/home/')
-        request.user = self.user
-        response = views.home(request)
-        is_logged_in = "Logout" in response.content.decode()
-        return self.assertTrue(is_logged_in)
+        request = self.factory.get('/public_gate/property_list/')
+        response = views.property_lists(request)
+        return self.assertEqual(response.status_code, 200)
+
+    def test_add_plist_select_responds(self):
+        # Create an instance of a GET request.
+        request = self.factory.get('/public_gate/property_list/add/')
+        response = views.add_property_list(request)
+        return self.assertEqual(response.status_code, 200)
+
+    def test_login(self):
+        # Create an instance of a GET request.
+        response = self.c.post("/login/", dict(login="John+Doe", password="test"), follow=True)
+        return self.assertEqual(response.status_code, 200)
