@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>inputs</key>
+	<array>
+        <dict>
+			<key>type</key>
+			<string>string</string>
+			<key>title</key>
+			<string>Display name</string>
+			<key>key</key>
+			<string>PayloadDisplayName</string>
+			<key>description</key>
+			<string>Name of your property list</string>
+			<key>required</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>type</key>
+			<string>string</string>
+			<key>title</key>
+			<string>Description</string>
+			<key>key</key>
+			<string>PayloadDescription</string>
+			<key>description</key>
+			<string>Short description of your property list</string>
+			<key>required</key>
+			<false/>
+		</dict>
+        <dict>
+			<key>type</key>
+			<string>string</string>
+			<key>title</key>
+			<string>Identifier</string>
+			<key>key</key>
+			<string>PayloadIdentifier</string>
+			<key>description</key>
+			<string>Unique identifier, for example com.organization.plist</string>
+			<key>required</key>
+			<false/>
+		</dict>
+        <dict>
+			<key>type</key>
+			<string>string</string>
+			<key>title</key>
+			<string>Organization</string>
+			<key>key</key>
+			<string>PayloadOrganization</string>
+			<key>required</key>
+			<false/>
+		</dict>
+        <dict>
+			<key>type</key>
+			<string>string</string>
+			<key>title</key>
+			<string>Type</string>
+			<key>key</key>
+			<string>PayloadType</string>
+			<key>description</key>
+			<string>Type of your property list</string>
+			<key>required</key>
+			<false/>
+		</dict>
+        <dict>
+			<key>type</key>
+			<string>string</string>
+			<key>title</key>
+			<string>Version</string>
+			<key>key</key>
+			<string>PayloadVersion</string>
+			<key>description</key>
+			<string>Version of your property list</string>
+			<key>required</key>
+			<false/>
+		</dict>
+        <dict>
+			<key>type</key>
+			<string>boolean</string>
+			<key>title</key>
+			<string>Removal disallowed</string>
+			<key>key</key>
+			<string>PayloadRemovalDisallowed</string>
+			<key>description</key>
+			<string>Allow client to remove your plist once installed</string>
+			<key>required</key>
+			<false/>
+		</dict>
+	</array>
+	<key>outputs</key>
+	<dict>
+		<key>PayloadDisplayName</key>
+		<string>$PayloadDisplayName?</string>
+		<key>PayloadDescription</key>
+		<string>$PayloadDescription?</string>
+		<key>PayloadIdentifier</key>
+		<string>$PayloadIdentifier?</string>
+		<key>PayloadOrganization</key>
+		<string>$PayloadOrganization?</string>
+		<key>PayloadType</key>
+		<string>$PayloadType?</string>
+		<key>PayloadVersion</key>
+		<string>$PayloadVersion?</string>
+		<key>PayloadRemovalDisallowed</key>
+		<string>$PayloadRemovalDisallowed?</string>
+        <key>PayloadUUID</key>
+        <string>@UUID</string>
+	</dict>
+</dict>
+</plist>

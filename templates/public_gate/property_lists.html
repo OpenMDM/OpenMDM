@@ -9,16 +9,16 @@
             <tr>
                 <th>#</th>
                 <th>Name</th>
-                <th>Type</th>
+                <th>Description</th>
                 <th>Download</th>
             </tr>
             {% for group, plists in property_lists.items %}
                 {% for plist in plists %}
                     <tr>
                         <td>{{ plist.id }}</td>
-                        <td><a href="{% url 'public_gate:property_list_detail' plist.id %}">{{ plist.PayloadContent.0. }}</a></td>
-                        <td>{{ plist.display_name }}</td>
-                        <td><a class="btn btn-primary" href="{% url 'public_gate:property_list_download' plist.id %}" download="list_{{ plist.uuid }}.plist" >Download &raquo;</a></td>
+                        <td><a href="{% url 'public_gate:property_list_detail' plist.id %}">{{ plist.plist.PayloadDisplayName }}</a></td>
+                        <td>{{ plist.plist.PayloadDescription }}</td>
+                        <td><a class="btn btn-primary" href="{% url 'public_gate:property_list_download' plist.id %}" download="{{ plist.id }}.mobileconfig" >Download &raquo;</a></td>
                     </tr>
                 {% endfor %}
             {% endfor %}

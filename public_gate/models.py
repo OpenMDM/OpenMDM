@@ -9,69 +9,90 @@ from mongoengine import *
 from common.local.settings import CONFIG
 
 
-class Plist(DynamicEmbeddedDocument):
+class CustomPlist(DynamicEmbeddedDocument):
+    PayloadUUID = StringField(max_length=100)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        PayloadUUID = str(uuid.uuid1()).upper()
+        self.PayloadUUID = str(uuid.uuid1()).upper()
+
+
+class Plist(EmbeddedDocument):
+    PayloadDisplayName = StringField(max_length=100)
+    PayloadDescription = StringField(max_length=100)
+    PayloadIdentifier = StringField(max_length=100)
+    PayloadOrganization = StringField(max_length=100)
+    PayloadRemovalDisallowed = BooleanField(default=True)
+    PayloadType = StringField(max_length=100)
+    PayloadUUID = StringField(max_length=100)
+    PayloadVersion = FloatField
+    PayloadContent = ListField(EmbeddedDocumentField(CustomPlist))
+
+    def __init__(self, recipe=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if recipe is not None:
+            self.PayloadDisplayName = recipe.get('PayloadDisplayName', '<no name>')
+            self.PayloadDescription = recipe.get('PayloadDescription', '<no description>')
+            self.PayloadIdentifier = recipe.get('PayloadIdentifier', '<no identifier>')
+            self.PayloadOrganization = recipe.get('PayloadOrganization', '<no organization>')
+            self.PayloadRemovalDisallowed = recipe.get(bool('PayloadRemovalDisallowed'), True)
+            self.PayloadType = recipe.get('PayloadType', '<no type>')
+            self.PayloadUUID = str(uuid.uuid1()).upper()
+            self.PayloadVersion = recipe.get('PayloadVersion', '<no version>')
 
 
 class Recipe(Document):
-    file_location = StringField(max_length=200)
     group_name = StringField(max_length=100)
-    version = StringField(max_length=20)
-    display_name = StringField(max_length=200)
-    property_list = ListField(EmbeddedDocumentField(Plist))
-
-    def __init__(self, recipe=None, *args, **values):
-        super().__init__(*args, **values)
-        if recipe is not None:
-            self.display_name = recipe['display_name']
-            self.version = str(recipe['version'])
-
-    def __str__(self):
-        return "Plist " + str(self.display_name) + " for group " + str(self.group_name)
+    plist = EmbeddedDocumentField(Plist)
 
     def generate(self):
         """
         Generate an plist file from a PropertyList object
         """
-        dictionary = self.to_mongo().to_dict()
+        recipe = self.to_mongo().to_dict()
+        plist = recipe['plist']
 
-        property_list = dict(
-            PayloadDisplayName=dictionary.get('display_name', '<no name>'),
-            PayloadDescription=dictionary.get('description', '<no description>'),
-            PayloadIdentifier=dictionary.get('identifier', '<no identifier>'),
-            PayloadOrganization=dictionary.get('organization', '<no organization>'),
-            PayloadRemovalDisallowed=dictionary.get('removal_disallowed', True),
-            PayloadType=dictionary.get('output_type', '<no type>'),
-            PayloadUUID=dictionary.get('UUID', str(uuid.uuid1()).upper()),
-            PayloadVersion=dictionary.get('version', '<no version>'),
-            PayloadContent=dictionary['property_list']
-        )
-        return dumps(property_list)
+        return dumps(plist)
 
 
 class RecipeForm():
+    base_recipe_dict = None
+    recipe_dict = None
+    plist = Plist()
+    recipe = Recipe()
+
     def __init__(self, recipe_name=None, data=None):
-        self.recipe_path = os.path.normpath(os.path.dirname(__file__) + "/../recipe/") + "/" + recipe_name
-        self.recipe_dict = plistlib.load(open(self.recipe_path, 'rb'), fmt=plistlib.FMT_XML)
-        self.form_answer = {}
-        self.recipe = Recipe(self.recipe_dict)
+        self.base_recipe_dict = RecipeForm.get_dict_from_recipe_name("base.xml")
+        self.recipe_dict = RecipeForm.get_dict_from_recipe_name(recipe_name)
+        self.plist = Plist(self.recipe_dict)
         # If form is filled out
         if data is not None:
-            plist = Plist()
+            custom_plist = CustomPlist()
             # We parse the expected outputs from the recipe
+            for key, value in self.base_recipe_dict['outputs'].items():
+                setattr(custom_plist, key, self.get_value_from_post_data(value, data))
             for key, value in self.recipe_dict['outputs'].items():
-                # And we fill an answer dictionary (in case of roll back)
-                self.form_answer[key] = self.get_value_from_post_data(value, data)
-                setattr(plist, key, self.get_value_from_post_data(value, data))
+                setattr(custom_plist, key, self.get_value_from_post_data(value, data))
+
             # Then we add recipe information
-            self.recipe.property_list.append(plist)
-            self.recipe.file_location = self.recipe_path
+            self.plist.PayloadContent.append(custom_plist)
             self.recipe.group_name = data.get("group_id")
+            self.recipe.plist = self.plist
 
     def save(self):
         self.recipe.save()
+
+    @staticmethod
+    def get_dict_from_recipe_name(recipe_name):
+        recipes_directory = os.path.normpath(os.path.dirname(__file__) + "/../recipe/") + "/"
+
+        # We get the required recipe
+        recipe_path = recipes_directory + recipe_name
+
+        # We get is as dict
+        recipe_dict = plistlib.load(open(recipe_path, 'rb'), fmt=plistlib.FMT_XML)
+
+        return recipe_dict
 
     def get_value_from_post_data(self, value, data):
         # $key?(yes):(no)
@@ -119,16 +140,15 @@ class RecipeForm():
                 return data[values['key']]
             return None
 
+        # @UUID
+        match = re.search("^@UUID$", value)
+        if match:
+            return str(uuid.uuid1()).upper()
+
         # @constant
         match = re.search("^@(.*)", value)
         if match:
             return match.group(1)
-
-        # <hex>
-        match = re.search("^<(.*)>$", value)
-        if match:
-            return match.group(1)
-
 
     @staticmethod
     def display_input(input_type, key, required, values, default_value, saved_value):
@@ -180,17 +200,16 @@ class RecipeForm():
                                                  else default_value if default_value is not None
                                                  else "")
         if input_type == "list":
-            select = []
-            select.append('<select class="form-control" name="{name}"{required} id="{id}">'.format(name=key,
-                                                                                             required=" required"
-                                                                                             if required
-                                                                                             else "",
-                                                                                             id=key))
+            select = ['<select class="form-control" name="{name}"{required} id="{id}">'.format(name=key,
+                                                                                               required=" required"
+                                                                                               if required
+                                                                                               else "",
+                                                                                               id=key)]
             for value in values:
                 select.append('<option value="{value}"{selected}>'.format(value=value['value'],
-                                                                     selected=" selected"
-                                                                     if saved_value == value['value']
-                                                                     else ""))
+                                                                          selected=" selected"
+                                                                          if saved_value == value['value']
+                                                                          else ""))
 
                 select.append(value['title'])
                 select.append("</option>")
@@ -254,7 +273,12 @@ class RecipeForm():
         return form
 
     def html_output(self):
-        form = RecipeForm.create_form(self.recipe_dict, [])
+        form = []
+        form.append('<fieldset><legend>{title}</legend>'.format(title="General description"))
+        form = RecipeForm.create_form(self.base_recipe_dict, form)
+        form.append('</fieldset>')
+        form.append('<fieldset><legend>{title}</legend>'.format(title="Content"))
+        form = RecipeForm.create_form(self.recipe_dict, form)
         form.append('<div class="form-group">')
         form.append('<label for=group_id>Applies to group</label>')
         form.append('<select class="form-control" name="group_id" required id="group_id">')
@@ -264,4 +288,5 @@ class RecipeForm():
             form.append("</option>")
         form.append('</select>')
         form.append('</div>')
+        form.append('</fieldset>')
         return "\n".join(form)
