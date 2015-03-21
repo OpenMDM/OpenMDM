@@ -1,7 +1,7 @@
 # OpenMDM Project
 
 OpenMDM Project is an Open-Source Mobile Device Management project, initially developed to support iOS devices, but built in order to be easily extended with multiple device types.  
-Language : Python 3.4.2 min
+Language : Python 3.4.2 and >  
 Authentication : LDAP3  
 Storage : MongoDB  
 
