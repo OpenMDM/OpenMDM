@@ -52,13 +52,28 @@
 		</dict>
         <dict>
 			<key>type</key>
-			<string>string</string>
+			<string>list</string>
 			<key>title</key>
 			<string>Type</string>
 			<key>key</key>
 			<string>PayloadType</string>
 			<key>description</key>
 			<string>Type of your property list</string>
+            <key>values</key>
+					<array>
+						<dict>
+							<key>value</key>
+							<string>mobileconfig</string>
+							<key>title</key>
+							<string>mobileconfig</string>
+						</dict>
+						<dict>
+							<key>value</key>
+							<string>plist</string>
+							<key>title</key>
+							<string>plist</string>
+						</dict>
+					</array>
 			<key>required</key>
 			<false/>
 		</dict>
