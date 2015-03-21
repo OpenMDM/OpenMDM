@@ -1,18 +1,11 @@
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
-from django.contrib.auth.hashers import (
-    make_password)
 from OpenMDM import settings
 import os
-
-
-
-
-from public_gate.models import PropertyList, PropertyListForm, UserForm, Address, Test, RecipeForm, Plist
+from public_gate.models import RecipeForm, Plist
 
 
 def home(request):
@@ -21,8 +14,6 @@ def home(request):
     :param request:
     :return render:
     """
-    test = Test(username="Romain", date_inscription="2014-07-07", address=Address(city="Paris", street="Water street", zip="75016"))
-    test.save()
     d = {}
     return render(request, 'public_gate/home.html', d)
 
@@ -101,7 +92,7 @@ def property_lists(request):
     """
     property_lists = Plist.objects.all()
     print(property_lists)
-    return render(request, 'public_gate/property_lists.html', dict(property_lists=property_lists))
+    return render(request, 'public_gate/property_lists.html', dict(property_lists=dict(all=property_lists)))
 
 
 def property_lists_for_user(request):
@@ -137,17 +128,9 @@ def property_list_detail(request, plist_id):
     :param plist_id: 
     :return render:
     """
-    try:
-        plist = PropertyList.objects.get(id=plist_id)
-        dependencies = plist.get_dependent_properties()
-    except PropertyList.DoesNotExist:
-        return HttpResponse(status=404)
-    plist_python = serializers.serialize("python", [plist])
-    dependencies_json = serializers.serialize("python", dependencies)
-    return render(request, 'public_gate/property_list_detail.html', dict(plist=plist,
-                                                                         dependencies=dependencies,
-                                                                         plist_python=plist_python,
-                                                                         dependencies_json=dependencies_json))
+
+    plist = Plist.objects(id=plist_id)
+    return render(request, 'public_gate/property_list_detail.html', dict(plist=plist[0]))
 
 
 def property_list_download(request, plist_id):
@@ -158,11 +141,8 @@ def property_list_download(request, plist_id):
     :param plist_id: 
     :return:
     """
-    try:
-        plist = Plist.objects(id=plist_id)
-        plist = plist[0].generate()
-    except PropertyList.DoesNotExist:
-        return HttpResponse(status=404)
+    plist = Plist.objects(id=plist_id)
+    plist = plist[0].generate()
     return render(request, 'public_gate/property_list_download.html', dict(plist=plist), content_type="application/xml")
 
 
@@ -183,6 +163,7 @@ def add_property_list(request):
             form = RecipeForm(recipe_name="recipe.plist",
                               data=request.POST)
             form.save()
+            form = False
 
         # We display all the recipes available
         files = []

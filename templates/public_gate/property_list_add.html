@@ -13,8 +13,9 @@
                             <option value="{{ file }}">{{ file }}</option>
                         {% endfor %}
                     </select>
-                    <button class="btn btn-group-lg btn-success" type="submit" value="select_recipe">Select recipe</button>
                 </div>
+                <button class="btn btn-group-lg btn-success" type="submit" value="select_recipe">Select recipe</button>
+
             {% else %}
                 <form action="{% url 'public_gate:property_list_add' %}" method="post">
                     {% csrf_token %}

@@ -1,225 +1,26 @@
-import inspect
 import os
 import plistlib
-import sys
-import uuid
 from plistlib import dumps
+import uuid
 import re
 
 from django.contrib.auth.models import User
-
-from django.db import models
-from django import forms
 from mongoengine import *
 from common.local.settings import CONFIG
-
-from common.utils.PropertyList import format_object_to_plist
-
-
-class Address(EmbeddedDocument):
-    street = StringField(max_length=100)
-    city = StringField(max_length=100)
-    zip = IntField()
-
-
-class Test(Document):
-    username = StringField(max_length=100)
-    date_inscription = DateTimeField(help_text='Sign-in date')
-    address = EmbeddedDocumentField(Address)
-
-
-
-
-
-
-class BaseModel(models.Model):
-    """
-    Describes base attributes for any property
-    """
-    payload_display_name = models.CharField(max_length=100)
-    payload_description = models.CharField(max_length=100)
-    payload_identifier = models.CharField(max_length=100, unique=True)
-    payload_organization = models.CharField(max_length=100)
-    payload_version = models.CharField(max_length=100)
-    payload_uuid = models.CharField(max_length=100, default=str(uuid.uuid1()).upper())
-
-    class Meta:
-        abstract = True
-
-
-class PropertyList(BaseModel):
-    """
-    Describes primary property
-    """
-    payload_type = models.CharField(max_length=13, editable=False, default="Configuration")
-    removal_disallowed = models.CharField(max_length=15, choices=(('never', "Never"),
-                                                                  ('authorization', "With authorization"),
-                                                                  ('always', "Always")))
-
-    def __str__(self):
-        return self.payload_display_name + " - " + self.payload_description
-
-    def save(self, *args, **kwargs):
-        super(PropertyList, self).save(*args, **kwargs)
-
-    def get_dependent_properties(self):
-        dependencies = []
-        for name, obj in (inspect.getmembers(sys.modules[__name__])):
-            if re.match("[A-Za-z]*Property$", name):
-                # Checking for all modules ending with "Property"
-                try:
-                    prop = obj.objects.get(property_list_id=self.id)
-                    dependencies.append(prop)
-                except obj.DoesNotExist:
-                    print("This property does not have " + name)
-        return dependencies
-
-
-    def generate(self):
-        """
-        Generate an plist file from a PropertyList object
-        """
-        result = format_object_to_plist(self)
-        result['payloadContent'] = []
-        for name, obj in (inspect.getmembers(sys.modules[__name__])):
-            # iOS properties name are only composed by letters, explaining [A-Za-z]
-            if re.match("[A-Za-z]*Property$", name):
-                # Checking for all modules ending with "Property"
-                try:
-                    prop = obj.objects.get(property_list_id=self.id)
-                    prop = format_object_to_plist(prop)
-                    result['payloadContent'].append(prop)
-                except obj.DoesNotExist:
-                    print("This property does not have " + name)
-        return dumps(result)
-
-
-class EmailAccountProperty(BaseModel):
-    """
-    Describes all necessary properties for mail configuration
-    """
-    property_list = models.OneToOneField(PropertyList)
-    payload_type = models.CharField(max_length=22, editable=False, default="com.apple.mail.managed")
-    email_account_description = models.CharField(max_length=100)
-    email_account_name = models.CharField(max_length=100)
-    email_account_type = models.CharField(max_length=15, choices=(
-        ("EmailTypePOP", "POP"),
-        ("EmailTypeIMAP", "IMAP")))
-    email_address = models.CharField(max_length=100)
-    incoming_mail_server_authentication = models.CharField(max_length=20, choices=(
-        ("EmailAuthNone", "None"),
-        ("EmailAuthPassword", "Password"),
-        ("EmailAuthCRAMMD5", "MD5 challenge"),
-        ("EmailAuthNTLM", "NTLM"),
-        ("EmailAuthHTTPMD5", "Condensed MD5 HTTP")))
-    incoming_mail_server_host_name = models.CharField(max_length=100)
-    incoming_mail_server_IMAP_prefix = models.CharField(max_length=100)
-    incoming_mail_server_port_number = models.IntegerField(default=143)
-    incoming_mail_server_use_SSL = models.BooleanField(default=False)
-    incoming_mail_server_user_name = models.CharField(max_length=100)
-    incoming_password = models.CharField(max_length=100)
-    outgoing_mail_server_authentication = models.CharField(max_length=20, choices=(
-        ("EmailAuthNone", "None"),
-        ("EmailAuthPassword", "Password"),
-        ("EmailAuthCRAMMD5", "MD5 challenge"),
-        ("EmailAuthNTLM", "NTLM"),
-        ("EmailAuthHTTPMD5", "Condensed MD5 HTTP")))
-    outgoing_mail_server_host_name = models.CharField(max_length=100)
-    outgoing_mail_server_port_number = models.IntegerField(default=587)
-    outgoing_mail_server_user_SSL = models.BooleanField(default=False)
-    outgoing_mail_server_user_name = models.CharField(max_length=100)
-    outgoing_password = models.CharField(max_length=100)
-    outgoing_password_same_as_incoming_password = models.BooleanField(default=True)
-    prevent_app_sheet = models.BooleanField(default=False)
-    prevent_move = models.BooleanField(default=False)
-    SMIME_enabled = models.BooleanField(default=False)
-
-    def __str__(self):
-        return self.email_account_name + " - " + self.email_account_description
-
-    def save(self, *args, **kwargs):
-        super(EmailAccountProperty, self).save(*args, **kwargs)
-        
-        
-class RestrictionsProperty(BaseModel):
-    """
-    Describes all restrictions properties
-    """
-    property_list = models.OneToOneField(PropertyList)
-    payload_type = models.CharField(max_length=28, editable=False, default="com.apple.applicationaccess")
-    allow_adding_game_center_friends = models.BooleanField(default=True)
-    allow_app_installation = models.BooleanField(default=True)
-    allow_assistant = models.BooleanField(default=True)
-    allow_assistant_while_locked = models.BooleanField(default=True)
-    allow_bookstore_erotica = models.BooleanField(default=True)
-    allow_camera = models.BooleanField(default=True)
-    allow_cloud_backup = models.BooleanField(default=True)
-    allow_cloud_document_sync = models.BooleanField(default=True)
-    allow_diagnostic_submission = models.BooleanField(default=True)
-    allow_explicit_content = models.BooleanField(default=True)
-    allow_global_background_fetch_when_roaming = models.BooleanField(default=True)
-    allow_in_app_purchases = models.BooleanField(default=True)
-    allow_multiplayer_gaming = models.BooleanField(default=True)
-    allow_passbook_while_locked = models.BooleanField(default=True)
-    allow_photo_stream = models.BooleanField(default=True)
-    allow_safari = models.BooleanField(default=True)
-    allow_screen_shot = models.BooleanField(default=True)
-    allow_shared_stream = models.BooleanField(default=True)
-    allow_untrusted_tLSPrompt = models.BooleanField(default=True)
-    allow_video_conferencing = models.BooleanField(default=True)
-    allow_voice_dialing = models.BooleanField(default=True)
-    allow_you_tube = models.BooleanField(default=True)
-    allow_iTtunes = models.BooleanField(default=True)
-    force_encrypted_backup = models.BooleanField(default=True)
-    force_iTunes_store_password_entry = models.BooleanField(default=True)
-    rating_apps = models.BooleanField(default=True)
-    rating_movies = models.BooleanField(default=True)
-    rating_region = models.BooleanField(default=True)
-    rating_tVShows = models.BooleanField(default=True)
-    safari_accept_cookies = models.BooleanField(default=True)
-    safari_allow_auto_fill = models.BooleanField(default=True)
-    safari_allow_java_script = models.BooleanField(default=True)
-    safari_allow_popups = models.BooleanField(default=True)
-    safari_force_fraud_warning = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.email_account_name + " - " + self.email_account_description
-
-    def save(self, *args, **kwargs):
-        super(RestrictionsProperty, self).save(*args, **kwargs)
-
-
-class PropertyListForm(forms.ModelForm):
-    class Meta:
-        model = PropertyList
-        fields = ['payload_display_name',
-                  'payload_description',
-                  'payload_identifier',
-                  'payload_organization',
-                  'payload_version',
-                  'removal_disallowed'
-                  ]
-
-
-class UserForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ['username',
-                  'password',
-                  'first_name',
-                  'last_name',
-                  'email',
-                  'is_superuser',
-                  'is_staff'
-                  ]
 
 
 class Plist(DynamicDocument):
     file_location = StringField(max_length=200)
     group_name = StringField(max_length=100)
 
+    def __init__(self, recipe=None, *args, **values):
+        super().__init__(*args, **values)
+        if recipe is not None:
+            self.display_name = recipe['display_name']
+            self.version = recipe['recipe_version']
+
     def __str__(self):
-        return "Plist " + str(self.file_location) + " for group " + str(self.group_name)
+        return "Plist " + str(self.display_name) + " for group " + str(self.group_name)
 
     def generate(self):
         """
@@ -233,10 +34,10 @@ class Plist(DynamicDocument):
 
 class RecipeForm():
     def __init__(self, recipe_name=None, data=None):
-        self.recipe_path = os.path.dirname(__file__) + "/../recipe/" + recipe_name
+        self.recipe_path = os.path.normpath(os.path.dirname(__file__) + "/../recipe/") + "/" + recipe_name
         self.recipe_dict = plistlib.load(open(self.recipe_path, 'rb'), fmt=plistlib.FMT_XML)
         self.form_answer = {}
-        self.plist = Plist()
+        self.plist = Plist(self.recipe_dict)
         # If form is filled out
         if data is not None:
 
@@ -250,6 +51,7 @@ class RecipeForm():
             # Then we add hook information
             self.plist.file_location = self.recipe_path
             self.plist.group_name = data.get("group_id")
+            self.plist.uuid = str(uuid.uuid1()).upper()
 
     def get_value_from_post_data(self, value, data):
         # $key?(yes):(no)

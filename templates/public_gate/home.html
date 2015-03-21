@@ -16,7 +16,7 @@
             <h2>You must be logged in</h2>
         {% else %}
             <h2>Welcome {{ user.username }}</h2>
-            <a href="{% url 'public_gate:property_lists_for_user' %}">Your property lists</a>
+            <a class="btn btn-success btn-lg" href="{% url 'public_gate:property_lists_for_user' %}" >Your property lists &raquo;</a>
         {% endif %}
     </div>
 </div>
