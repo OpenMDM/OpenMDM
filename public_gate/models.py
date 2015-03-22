@@ -59,9 +59,9 @@ class RecipeForm():
     base_recipe_dict = None
     recipe_dict = None
     plist = Plist()
-    recipe = Recipe()
 
     def __init__(self, recipe_name=None, data=None):
+        self.recipe = Recipe()
         self.base_recipe_dict = RecipeForm.get_dict_from_recipe_name("base.xml")
         self.recipe_dict = RecipeForm.get_dict_from_recipe_name(recipe_name)
         self.plist = Plist(self.recipe_dict)
