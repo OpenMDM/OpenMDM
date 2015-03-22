@@ -10,8 +10,6 @@
     <string>com.hackndo.plist</string>
     <key>PayloadOrganization</key>
     <string>hackndo</string>
-    <key>PayloadType</key>
-    <string>mobileconfig</string>
     <key>PayloadVersion</key>
     <string>1</string>
     <key>PayloadUUID</key>
@@ -312,6 +310,8 @@
 		<string>$OutgoingMailServerPortNumber?</string>
 		<key>OutgoingMailServerUseSSL</key>
 		<string>$OutgoingMailServerUseSSL?</string>
+        <key>PayloadType</key>
+        <string>@com.apple.mail.managed</string>
 	</dict>
 </dict>
 </plist>

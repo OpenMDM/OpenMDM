@@ -159,7 +159,8 @@ def add_property_list(request):
     else:
         if request.method == 'POST':
             # We save the plist
-            form = RecipeForm(recipe_name="recipe.plist",
+            file_name = request.POST.get('recipe_file')
+            form = RecipeForm(recipe_name=file_name,
                               data=request.POST)
             form.save()
             form = False

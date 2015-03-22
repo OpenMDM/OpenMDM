@@ -24,7 +24,7 @@
                         <td><a href="{% url 'public_gate:property_list_detail' plist.id %}">{{ plist.plist.PayloadContent.0.PayloadDisplayName }}</a></td>
                         <td>{{ plist.plist.PayloadContent.0.PayloadDescription }}</td>
                         <td>{{ plist.plist.PayloadContent.0.PayloadType }}</td>
-                        <td><a class="btn btn-primary" href="{% url 'public_gate:property_list_download' plist.id %}" download="{{ plist.id }}.{{ plist.plist.PayloadContent.0.PayloadType }}" >Download &raquo;</a></td>
+                        <td><a class="btn btn-primary" href="{% url 'public_gate:property_list_download' plist.id %}" download="{{ plist.id }}.mobileconfig" >Download &raquo;</a></td>
                     </tr>
                 {% endfor %}
             {% endfor %}

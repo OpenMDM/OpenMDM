@@ -52,33 +52,6 @@
 		</dict>
         <dict>
 			<key>type</key>
-			<string>list</string>
-			<key>title</key>
-			<string>Type</string>
-			<key>key</key>
-			<string>PayloadType</string>
-			<key>description</key>
-			<string>Type of your property list</string>
-            <key>values</key>
-					<array>
-						<dict>
-							<key>value</key>
-							<string>mobileconfig</string>
-							<key>title</key>
-							<string>mobileconfig</string>
-						</dict>
-						<dict>
-							<key>value</key>
-							<string>plist</string>
-							<key>title</key>
-							<string>plist</string>
-						</dict>
-					</array>
-			<key>required</key>
-			<false/>
-		</dict>
-        <dict>
-			<key>type</key>
 			<string>string</string>
 			<key>title</key>
 			<string>Version</string>
@@ -97,7 +70,7 @@
 			<key>key</key>
 			<string>PayloadRemovalDisallowed</string>
 			<key>description</key>
-			<string>Allow client to remove your plist once installed</string>
+			<string>Disallow the plist removal for your clients</string>
 			<key>required</key>
 			<false/>
 		</dict>
@@ -112,12 +85,8 @@
 		<string>$PayloadIdentifier?</string>
 		<key>PayloadOrganization</key>
 		<string>$PayloadOrganization?</string>
-		<key>PayloadType</key>
-		<string>$PayloadType?</string>
 		<key>PayloadVersion</key>
 		<string>$PayloadVersion?</string>
-		<key>PayloadRemovalDisallowed</key>
-		<string>$PayloadRemovalDisallowed?</string>
         <key>PayloadUUID</key>
         <string>@UUID</string>
 	</dict>

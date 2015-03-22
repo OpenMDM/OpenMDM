@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>PayloadDisplayName</key>
+    <string>Camera enabling</string>
+    <key>PayloadDescription</key>
+    <string>This is a test plist to allow or disallow camera use for the device</string>
+    <key>PayloadIdentifier</key>
+    <string>com.hackndo.plist.camera</string>
+    <key>PayloadOrganization</key>
+    <string>hackndo</string>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+    <key>PayloadUUID</key>
+    <string>@UUID</string>
+	<key>inputs</key>
+	<array>
+        <dict>
+			<key>type</key>
+			<string>boolean</string>
+			<key>title</key>
+			<string>Allow camera</string>
+			<key>key</key>
+			<string>allowCamera</string>
+		</dict>
+	</array>
+	<key>outputs</key>
+	<dict>
+		<key>allowCamera</key>
+		<string>$allowCamera?</string>
+        <key>PayloadType</key>
+        <string>@com.apple.applicationaccess</string>
+	</dict>
+</dict>
+</plist>
