@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <h2>{{ plist.plist.PayloadContent.0.PayloadDisplayName }} (ID : {{ plist.id }}) <a class="btn btn-primary btn-lg" href="{% url 'public_gate:property_list_download' plist.id %}" download="{{ plist.id }}.{{ plist.plist.PayloadType }}" >Download &raquo;</a></h2>
+        <h2>{{ plist.plist.PayloadContent.0.PayloadDisplayName }} (ID : {{ plist.id }}) <a class="btn btn-primary btn-lg" href="{% url 'public_gate:property_list_download' plist.id %}" download="{{ plist.id }}.{{ plist.plist.PayloadContent.0.PayloadType }}" >Download &raquo;</a></h2>
             <div>
                 <h3>
                     Property List description
