@@ -273,8 +273,7 @@ class RecipeForm():
         return form
 
     def html_output(self):
-        form = []
-        form.append('<fieldset><legend>{title}</legend>'.format(title="General description"))
+        form = ['<fieldset><legend>{title}</legend>'.format(title="General description")]
         form = RecipeForm.create_form(self.base_recipe_dict, form)
         form.append('</fieldset>')
         form.append('<fieldset><legend>{title}</legend>'.format(title="Content"))

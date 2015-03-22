@@ -3,16 +3,16 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <h2>{{ plist.display_name }} (ID : {{ plist.id }}) <a class="btn btn-primary btn-lg" href="{% url 'public_gate:property_list_download' plist.id %}" download="list_{{ plist.uuid }}.plist" >Download &raquo;</a></h2>
+        <h2>{{ plist.plist.PayloadContent.0.PayloadDisplayName }} (ID : {{ plist.id }}) <a class="btn btn-primary btn-lg" href="{% url 'public_gate:property_list_download' plist.id %}" download="{{ plist.id }}.{{ plist.plist.PayloadType }}" >Download &raquo;</a></h2>
             <div>
                 <h3>
-                    Description
+                    Property List description
                 </h3>
                 <p>
-                    {{ plist.display_name }}
+                    {{ plist.plist.PayloadContent.0.PayloadDescription }}
                 </p>
                 <h3>
-                    Characteristics
+                    Recipe characteristics
                 </h3>
                 <table class="table table-striped table-condensed">
                 <tr>
@@ -20,10 +20,26 @@
                     <th>Value</th>
                 </tr>
                 {% load app_filters %}
-                {% for key in plist %}
+                {% for key in plist.plist %}
                     <tr>
                         <td>{{ key }}</td>
-                        <td>{{ plist|get_item:key }}</td>
+                        <td>{{ plist.plist|get_item:key }}</td>
+                    </tr>
+                {% endfor %}
+                </table>
+                <h3>
+                    Property List characteristics
+                </h3>
+                <table class="table table-striped table-condensed">
+                <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+                </tr>
+                {% load app_filters %}
+                {% for key in plist.plist.PayloadContent.0 %}
+                    <tr>
+                        <td>{{ key }}</td>
+                        <td>{{ plist.plist.PayloadContent.0|get_item:key }}</td>
                     </tr>
                 {% endfor %}
                 </table>
