@@ -143,7 +143,7 @@ def property_list_download(request, plist_id):
     plist = Recipe.objects(id=plist_id)
     plist = plist[0].generate()
     response = render(request, 'public_gate/property_list_download.html', dict(plist=plist), content_type="application/x-apple-aspen-config")
-    response['Content-Disposition'] = "attachment; filename='{plist_id}.mobileconfig'".format(plist_id=plist_id)
+    response['Content-Disposition'] = "attachment; filename={plist_id}.mobileconfig".format(plist_id=plist_id)
     return response
 
 
