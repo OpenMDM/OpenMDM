@@ -100,6 +100,40 @@
 			<key>required</key>
 			<false/>
 		</dict>
+        <dict>
+			<key>type</key>
+			<string>boolean</string>
+			<key>title</key>
+			<string>Restreindre l'utilisation par des applications tierces</string>
+			<key>key</key>
+			<string>PreventAppSheet</string>
+			<key>required</key>
+			<false/>
+		</dict>
+        <dict>
+			<key>type</key>
+			<string>boolean</string>
+			<key>title</key>
+			<string>Restreindre le déplacement</string>
+			<key>key</key>
+			<string>PreventMove</string>
+            <key>description</key>
+			<string>Autoriser l'utilisateur à déplacer les messages à partir de ce compte</string>
+			<key>required</key>
+			<false/>
+		</dict>
+        <dict>
+			<key>type</key>
+			<string>boolean</string>
+			<key>title</key>
+			<string>Activer S/MIME</string>
+			<key>key</key>
+			<string>SMIMEEnabled</string>
+            <key>description</key>
+			<string>Prendre en charge S/MIME pour ce compte</string>
+			<key>required</key>
+			<false/>
+		</dict>
 		<dict>
 			<key>type</key>
 			<string>group</string>
@@ -310,6 +344,12 @@
 		<string>$OutgoingMailServerPortNumber?</string>
 		<key>OutgoingMailServerUseSSL</key>
 		<string>$OutgoingMailServerUseSSL?</string>
+        <key>PreventAppSheet</key>
+        <string>$PreventAppSheet?</string>
+        <key>PreventMove?</key>
+        <string>$PreventMove?</string>
+        <key>SMIMEEnabled</key>
+        <string>$SMIMEEnabled?</string>
         <key>PayloadType</key>
         <string>@com.apple.mail.managed</string>
 	</dict>

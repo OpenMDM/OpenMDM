@@ -30,7 +30,7 @@ class Plist(EmbeddedDocument):
     PayloadContent = ListField(EmbeddedDocumentField(CustomPlist))
 
     def __init__(self, recipe=None, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs) # 103 128 159
         if recipe is not None:
             self.PayloadDisplayName = recipe.get('PayloadDisplayName', '<no name>')
             self.PayloadDescription = recipe.get('PayloadDescription', '<no description>')
