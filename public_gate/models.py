@@ -36,7 +36,7 @@ class Plist(EmbeddedDocument):
             self.PayloadDescription = recipe.get('PayloadDescription', '<no description>')
             self.PayloadIdentifier = recipe.get('PayloadIdentifier', '<no identifier>')
             self.PayloadOrganization = recipe.get('PayloadOrganization', '<no organization>')
-            self.PayloadRemovalDisallowed = recipe.get(str_to_bool('PayloadRemovalDisallowed'), False)
+            self.PayloadRemovalDisallowed = recipe.get('PayloadRemovalDisallowed', False)
             self.PayloadType = 'Configuration'
             self.PayloadUUID = str(uuid.uuid1()).upper()
             self.PayloadVersion = int(recipe.get('PayloadVersion', '1'))
@@ -145,7 +145,7 @@ class RecipeForm():
             if values['key'] in data:
                 data_type = self.outputs[values['key']]['input_type']
                 if data_type == "boolean":
-                    return bool(data[values['key']])
+                    return str_to_bool(data[values['key']])
                 elif data_type == "integer":
                     return int(data[values['key']])
                 else:
@@ -195,10 +195,12 @@ class RecipeForm():
         elif input_type == "boolean":
             # Hack for posting checkbox even if it's unchecked. Hidden input value will be used in case of
             # the checkbox is unchecked
+
             hidden_input = '<input type="hidden" ' \
                            'name="{name}"' \
                            'value="{value}">'.format(name=key,
                                                      value="False")
+
             current_input = hidden_input + current_input.format(id=key,
                                                                 type="checkbox",
                                                                 input_class="",
