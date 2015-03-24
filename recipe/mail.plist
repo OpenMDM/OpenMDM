@@ -11,7 +11,7 @@
     <key>PayloadOrganization</key>
     <string>hackndo</string>
     <key>PayloadVersion</key>
-    <string>1</string>
+    <integer>1</integer>
     <key>PayloadUUID</key>
     <string>@UUID</string>
 	<key>target_os</key>
@@ -188,7 +188,7 @@
                     <key>default_value</key>
                     <integer>143</integer>
 					<key>description</key>
-					<string>Si aucune valeur n&apos;est indiqué, les ports par défaut seront utilisés</string>
+					<string>Le port par défaut est 143</string>
 					<key>key</key>
 					<string>IncomingMailServerPortNumber</string>
 					<key>required</key>
@@ -261,8 +261,10 @@
 					<string>integer</string>
 					<key>title</key>
 					<string>Port</string>
+                    <key>default_value</key>
+                    <integer>587</integer>
 					<key>description</key>
-					<string>Si aucune valeur n&apos;est indiqué, les ports par défaut seront utilisés</string>
+					<string>Le port par défaut est 587</string>
 					<key>key</key>
 					<string>OutgoingMailServerPortNumber</string>
 					<key>required</key>

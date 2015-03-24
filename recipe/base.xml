@@ -52,11 +52,13 @@
 		</dict>
         <dict>
 			<key>type</key>
-			<string>string</string>
+			<string>integer</string>
 			<key>title</key>
 			<string>Version</string>
 			<key>key</key>
 			<string>PayloadVersion</string>
+            <key>default_value</key>
+            <integer>1</integer>
 			<key>description</key>
 			<string>Version of your property list</string>
 			<key>required</key>

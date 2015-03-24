@@ -26,7 +26,7 @@ class Plist(EmbeddedDocument):
     PayloadRemovalDisallowed = BooleanField(default=True)
     PayloadType = StringField(max_length=100)
     PayloadUUID = StringField(max_length=100)
-    PayloadVersion = StringField(max_length=100)
+    PayloadVersion = IntField()
     PayloadContent = ListField(EmbeddedDocumentField(CustomPlist))
 
     def __init__(self, recipe=None, *args, **kwargs):
@@ -37,9 +37,9 @@ class Plist(EmbeddedDocument):
             self.PayloadIdentifier = recipe.get('PayloadIdentifier', '<no identifier>')
             self.PayloadOrganization = recipe.get('PayloadOrganization', '<no organization>')
             self.PayloadRemovalDisallowed = recipe.get(str_to_bool('PayloadRemovalDisallowed'), False)
-            self.PayloadType = recipe.get('PayloadType', '<no type>')
+            self.PayloadType = 'Configuration'
             self.PayloadUUID = str(uuid.uuid1()).upper()
-            self.PayloadVersion = str(recipe.get('PayloadVersion', '<no version>'))
+            self.PayloadVersion = int(recipe.get('PayloadVersion', '1'))
 
 
 class Recipe(Document):
@@ -65,17 +65,19 @@ class RecipeForm():
         self.recipe_name = recipe_name
         self.plist = Plist()
         self.recipe = Recipe()
+        self.outputs = {}
         self.base_recipe_dict = RecipeForm.get_dict_from_recipe_name("base.xml")
         self.recipe_dict = RecipeForm.get_dict_from_recipe_name(self.recipe_name)
         self.plist = Plist(self.recipe_dict)
         # If form is filled out
         if data is not None:
+            self.outputs = self.parse_for_output(self.base_recipe_dict, {})
+            self.outputs = self.parse_for_output(self.recipe_dict, self.outputs)
             custom_plist = CustomPlist()
             # We parse the expected outputs from the recipe
-            for key, value in self.base_recipe_dict['outputs'].items():
-                setattr(custom_plist, key, self.get_value_from_post_data(value, data, type(value)))
-            for key, value in self.recipe_dict['outputs'].items():
-                setattr(custom_plist, key, self.get_value_from_post_data(value, data, type(value)))
+            dict_iterate = dict(self.base_recipe_dict['outputs'], **self.recipe_dict['outputs'])
+            for key, value in dict_iterate.items():
+                setattr(custom_plist, key, self.get_value_from_post_data(value, data))
 
             # Then we add recipe information
             self.plist.PayloadContent.append(custom_plist)
@@ -98,7 +100,7 @@ class RecipeForm():
 
         return recipe_dict
 
-    def get_value_from_post_data(self, value, data, data_type):
+    def get_value_from_post_data(self, value, data):
         # $key?(yes):(no)
         match = re.search("^\$(.*)\?\((.*)\):\((.*)\)$", value)
         if match:
@@ -106,9 +108,9 @@ class RecipeForm():
                           yes=match.group(2),
                           no=match.groups(3))
             if values['key'] in data:
-                return self.get_value_from_post_data(values['yes'], data, data_type)
+                return self.get_value_from_post_data(values['yes'], data)
             else:
-                return self.get_value_from_post_data(values['no'], data, data_type)
+                return self.get_value_from_post_data(values['no'], data)
 
         # $key?(yes):
         match = re.search("^\$(.*)\?\((.*)\):$", value)
@@ -116,7 +118,7 @@ class RecipeForm():
             values = dict(key=match.group(1),
                           yes=match.group(2))
             if values['key'] in data:
-                return self.get_value_from_post_data(values['yes'], data, data_type)
+                return self.get_value_from_post_data(values['yes'], data)
             return None
 
         # $key?:(no)
@@ -125,7 +127,7 @@ class RecipeForm():
             values = dict(key=match.group(1),
                           no=match.group(2))
             if values['key'] not in data:
-                return self.get_value_from_post_data(values['no'], data, data_type)
+                return self.get_value_from_post_data(values['no'], data)
             return None
 
         # $key?
@@ -133,7 +135,7 @@ class RecipeForm():
         if match:
             values = dict(key=match.group(1))
             if values['key'] in data:
-                return self.get_value_from_post_data("$" + values['key'], data, data_type)
+                return self.get_value_from_post_data("$" + values['key'], data)
             return None
 
         # $key
@@ -141,7 +143,13 @@ class RecipeForm():
         if match:
             values = dict(key=match.group(1))
             if values['key'] in data:
-                return data[values['key']]
+                data_type = self.outputs[values['key']]['input_type']
+                if data_type == "boolean":
+                    return bool(data[values['key']])
+                elif data_type == "integer":
+                    return int(data[values['key']])
+                else:
+                    return data[values['key']]
             return None
 
         # @UUID
@@ -152,6 +160,8 @@ class RecipeForm():
         # @constant
         match = re.search("^@(.*)", value)
         if match:
+            if match.group(1) in ("YES", "NO"):
+                return bool(match.group(1))
             return match.group(1)
 
     @staticmethod
@@ -271,6 +281,28 @@ class RecipeForm():
                 if type(value).__name__ in ("dict", "list"):
                     form = RecipeForm.create_form(value, form)
         return form
+
+    @staticmethod
+    def parse_for_output(obj, output):
+        if type(obj).__name__ == "dict":
+            if "type" in obj.keys() and "title" in obj.keys():
+                if obj['type'] == "group":
+                    output = RecipeForm.parse_for_output(obj['content'], output)
+                else:
+                    output[obj.get('key')] = dict(input_type=obj['type'],
+                                                  required=obj.get('required', None),
+                                                  values=obj.get('values', None),
+                                                  default_value=obj.get('default_value', None),
+                                                  saved_value=None)
+            else:
+                for key, value in obj.items():
+                    if type(value).__name__ in ("dict", "list"):
+                        output = RecipeForm.parse_for_output(value, output)
+        else:
+            for value in obj:
+                if type(value).__name__ in ("dict", "list"):
+                    output = RecipeForm.parse_for_output(value, output)
+        return output
 
     def html_output(self):
         form = ['<fieldset><legend>{title}</legend>'.format(title="General description")]
