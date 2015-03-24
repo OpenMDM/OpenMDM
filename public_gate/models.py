@@ -289,11 +289,13 @@ class RecipeForm():
                 if obj['type'] == "group":
                     output = RecipeForm.parse_for_output(obj['content'], output)
                 else:
-                    output[obj.get('key')] = dict(input_type=obj['type'],
+                    output[obj.get('key')] = dict(input_type=obj.get('type_value', obj['type']),
                                                   required=obj.get('required', None),
                                                   values=obj.get('values', None),
                                                   default_value=obj.get('default_value', None),
                                                   saved_value=None)
+                    if obj.get('key') == "ratingMovies":
+                        print('ok')
             else:
                 for key, value in obj.items():
                     if type(value).__name__ in ("dict", "list"):
