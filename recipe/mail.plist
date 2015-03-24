@@ -346,7 +346,7 @@
 		<string>$OutgoingMailServerUseSSL?</string>
         <key>PreventAppSheet</key>
         <string>$PreventAppSheet?</string>
-        <key>PreventMove?</key>
+        <key>PreventMove</key>
         <string>$PreventMove?</string>
         <key>SMIMEEnabled</key>
         <string>$SMIMEEnabled?</string>
