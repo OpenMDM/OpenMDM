@@ -7,23 +7,15 @@
 
         <table class="table table-striped">
             <tr>
-                <th>#</th>
-                <th>Category</th>
                 <th>Group</th>
                 <th>Name</th>
-                <th>Description</th>
-                <th>Type</th>
                 <th>Download</th>
             </tr>
             {% for group, plists in property_lists.items %}
                 {% for plist in plists %}
                     <tr>
-                        <td>{{ plist.id }}</td>
-                        <td>{{ plist.plist.PayloadDisplayName }}</td>
                         <td>{{ plist.group_name }}</td>
                         <td><a href="{% url 'public_gate:property_list_detail' plist.id %}">{{ plist.plist.PayloadContent.0.PayloadDisplayName }}</a></td>
-                        <td>{{ plist.plist.PayloadContent.0.PayloadDescription }}</td>
-                        <td>{{ plist.plist.PayloadContent.0.PayloadType }}</td>
                         <td><a class="btn btn-primary" href="{% url 'public_gate:property_list_download' plist.id %}" >Download &raquo;</a></td>
                     </tr>
                 {% endfor %}
