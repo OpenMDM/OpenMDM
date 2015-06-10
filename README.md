@@ -46,7 +46,7 @@ sudo apt-get install libmysqlclient-dev
 Create a MySQL database and user
 ```mysql
 CREATE DATABASE mdmdb;
-GRANT ALL PRIVILEGES ON mdmdb.* TO 'mdmuser@localhost' IDENTIFIED BY 'MDMPassword123';
+GRANT ALL PRIVILEGES ON mdmdb.* TO 'mdmuser'@'localhost' IDENTIFIED BY 'MDMPassword123';
 ```
 
 ```sh
