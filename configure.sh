@@ -21,7 +21,7 @@ then
 fi
 SITE_PACKAGE=$(${PYTHON3_PATH} -c 'import site; print(site.getsitepackages()[0])')
 
-echo "Creating tabes ..."
+echo "Creating tables ..."
 ${PYTHON3_PATH} manage.py makemigrations public_gate
 ${PYTHON3_PATH} manage.py migrate
 
