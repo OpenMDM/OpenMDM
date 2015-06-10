@@ -38,6 +38,7 @@ sudo apt-get install libsasl2-dev
 sudo apt-get install python3.4
 sudo apt-get install mongodb
 sudo apt-get install mysql-server
+sudo apt-get install libmysqlclient-dev
 ```
 
 #### For all systems
@@ -53,6 +54,7 @@ cd /usr/local
 virtualenv -p python3.4 OpenMDM_VEnv
 cd OpenMDM_VEnv
 source ./bin/activate
+pip3.4 install mysqlclient
 pip3.4 install django-admin-bootstrapped
 pip3.4 install git+https://github.com/rbarrois/python-ldap.git@py3
 pip3.4 install django-auth-ldap
