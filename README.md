@@ -29,6 +29,8 @@ Also, OpenMDM require a LDAP service for accounts management.
 
 Note, a bug exist in current pymongo version, stick to pymongo==2.8.1 or use master version from official repository until publication.
 
+At this time, admin rights are attributed to people in the admin group in LDAP.
+
 ### Installation
 
 #### Prepare Debian 8
@@ -67,10 +69,9 @@ Now your system is ready, you must customize the common/local/settings.py values
 
 ```sh
 sudo ./configure.sh
-python manage.py runserver
+python manage.py runserver 0.0.0.0:8000
 ```
 OpenMDM is now listening on port 8000.
-You can set a custom port and accept connexions from any IP addresses
 
 ### Development
 
