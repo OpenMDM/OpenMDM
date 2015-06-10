@@ -27,6 +27,8 @@ OpenMDM uses open source projects to work properly:
 
 Also, OpenMDM require a LDAP service for accounts management.
 
+Note, a bug exist in current pymongo version, stick to pymongo==2.8.1 or use master version from official repository until publication.
+
 ### Installation
 
 #### Prepare Debian 8
@@ -54,6 +56,7 @@ source ./bin/activate
 pip3.4 install django-admin-bootstrapped
 pip3.4 install git+https://github.com/rbarrois/python-ldap.git@py3
 pip3.4 install django-auth-ldap
+pip3.4 install pymongo==2.8.1
 pip3.4 install mongoengine
 git clone https://github.com/betezed/MobileDeviceManagement.git OpenMDM
 cd OpenMDM
