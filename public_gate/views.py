@@ -52,11 +52,10 @@ def site_login(request):
     :return render:
     """
     if request.method == "POST":
-        print("login post")
         user = None
         user_login = request.POST['login']
         user_password = request.POST['password']
-        print(user_login + " " + user_password)
+        print("Login tryout by "+user_login)
         if user_login != "" and user_password != "":
             user = authenticate(username=user_login, password=user_password)
         if user is not None:
