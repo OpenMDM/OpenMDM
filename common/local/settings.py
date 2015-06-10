@@ -8,7 +8,7 @@ This is an example, please update with your own information
 CONFIG = dict(
     local=dict(
         database=dict(
-            ENGINE='mysql.connector.django',
+            ENGINE='django.db.backends.mysql',
             NAME='mdmdb',
             USER='mdmuser',
             PASSWORD='MDMPassword123',
